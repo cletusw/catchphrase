@@ -1,19 +1,62 @@
 import {
-  html,
   component,
+  html,
+  useEffect,
   useState,
-} from 'https://unpkg.com/haunted?module';
+} from 'https://cdn.pika.dev/haunted@^4.7.0';
+import {useMachine} from 'https://cdn.pika.dev/haunted-robot@^0.2.1';
+
+import {createGame} from './game.js';
 
 function CatchphraseApp() {
-  const [count, setCount] = useState(0);
+  const [error, setError] = useState('');
+  const [gameId, setGameId] = useState('');
+
+  useEffect(() => {
+    createGame().then(setGameId, setError);
+  }, []);
+
+  function errorView() {
+    return html`
+      <div>
+        ${error}
+      </div>
+    `;
+  }
+
+  function noDataView() {
+    return html`
+      <div>
+        Loading...
+      </div>
+    `;
+  }
+
+  function gameReadyView() {
+    return html`
+      <div>
+        Your game id is: <span>${gameId}</span>
+      </div>
+    `;
+  }
+
+  function body() {
+    if (error) {
+      return errorView();
+    }
+    if (!gameId) {
+      // TODO show nothing until 250ms in case data comes back quickly
+      return noDataView();
+    }
+    return gameReadyView();
+  }
 
   return html`
     <h1>Catchphrase</h1>
-    <div id="count">${count}</div>
-    <button type="button" @click=${() => setCount(count + 1)}>
-      Increment
-    </button>
+    ${body()}
   `;
+
+  // TODO: Make sure to .lowercase when looking to join via gameid
 }
 
 customElements.define('catchphrase-app', component(CatchphraseApp));
