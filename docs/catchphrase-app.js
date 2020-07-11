@@ -51,9 +51,25 @@ function CatchphraseApp() {
     return gameReadyView();
   }
 
+  function redirectToJoin(event) {
+    console.log('redirectToJoin');
+    event.preventDefault();
+  }
+
   return html`
     <h1>Catchphrase</h1>
+    <h2>Host a game</h2>
     ${body()}
+    <h2>Join a game</h2>
+    <form>
+      <label>
+        Enter game id:
+        <input
+            type="text"
+            name="joinGameId" >
+      </label>
+      <button type="submit" @click=${redirectToJoin} />Join</button>
+    </form>
   `;
 
   // TODO: Make sure to .lowercase when looking to join via gameid
