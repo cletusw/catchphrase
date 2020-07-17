@@ -13,7 +13,13 @@ function randomString(length, chars) {
 
 function createGameId() {
   // Groups of 3 characters separated by hyphens for easier reading
-  return randomString(GAMEID_LENGTH, GAMEID_ALPHABET).match(/.{1,3}/g).join('-');
+  const gameId = randomString(GAMEID_LENGTH, GAMEID_ALPHABET).match(/.{1,3}/g).join('-');
+  validateGameId(gameId);
+  return gameId;
+}
+
+export function validateGameId(potentialGameId) {
+  return /\w{3}-\w{3}-\w{3}/.test(potentialGameId);
 }
 
 async function getUniqueGameId(games) {

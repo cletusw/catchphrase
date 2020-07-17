@@ -6,7 +6,10 @@ import {
 } from 'https://cdn.pika.dev/haunted@^4.7.0';
 import {useMachine} from 'https://cdn.pika.dev/haunted-robot@^0.2.1';
 
-import {createGame} from './game.js';
+import {
+  createGame,
+  validateGameId,
+} from './game.js';
 
 function CatchphraseApp() {
   const [error, setError] = useState('');
@@ -52,8 +55,20 @@ function CatchphraseApp() {
   }
 
   function redirectToJoin(event) {
-    console.log('redirectToJoin');
     event.preventDefault();
+
+    const potentialGameId = event.target.elements.joinGameId.value;
+    if (!validateGameId(potentialGameId)) {
+      setError(`Invalid game ID: ${potentialGameId}`);
+      return;
+    }
+
+    console.log('TODO: actually join');
+    history.pushState(
+      null /* state */,
+      '' /* title */,
+      potentialGameId /* url */,
+    );
   }
 
   return html`
@@ -61,14 +76,15 @@ function CatchphraseApp() {
     <h2>Host a game</h2>
     ${body()}
     <h2>Join a game</h2>
-    <form>
+    <form @submit="${redirectToJoin}">
       <label>
         Enter game id:
         <input
             type="text"
-            name="joinGameId" >
+            name="joinGameId"
+            value="abc-def-ghi"><!-- TODO: remove -->
       </label>
-      <button type="submit" @click=${redirectToJoin} />Join</button>
+      <button type="submit">Join</button>
     </form>
   `;
 
