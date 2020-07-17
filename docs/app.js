@@ -8,10 +8,10 @@ import {useMachine} from 'https://cdn.pika.dev/haunted-robot@^0.2.1';
 
 import {
   createGame,
-  validateGameId,
 } from './game.js';
+import './join.js';
 
-function CatchphraseApp() {
+function App() {
   const [error, setError] = useState('');
   const [gameId, setGameId] = useState('');
 
@@ -54,41 +54,14 @@ function CatchphraseApp() {
     return gameReadyView();
   }
 
-  function redirectToJoin(event) {
-    event.preventDefault();
-
-    const potentialGameId = event.target.elements.joinGameId.value;
-    if (!validateGameId(potentialGameId)) {
-      setError(`Invalid game ID: ${potentialGameId}`);
-      return;
-    }
-
-    console.log('TODO: actually join');
-    history.pushState(
-      null /* state */,
-      '' /* title */,
-      potentialGameId /* url */,
-    );
-  }
-
   return html`
     <h1>Catchphrase</h1>
     <h2>Host a game</h2>
     ${body()}
-    <h2>Join a game</h2>
-    <form @submit="${redirectToJoin}">
-      <label>
-        Enter game id:
-        <input
-            type="text"
-            name="joinGameId"
-            value="abc-def-ghi"><!-- TODO: remove -->
-      </label>
-      <button type="submit">Join</button>
-    </form>
+    <catchphrase-join></catchphrase-join>
   `;
 
   // TODO: Make sure to .lowercase when looking to join via gameid
 }
 
-customElements.define('catchphrase-app', component(CatchphraseApp));
+customElements.define('catchphrase-app', component(App));
