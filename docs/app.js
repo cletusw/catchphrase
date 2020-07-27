@@ -10,6 +10,7 @@ import {
   createGame,
 } from './game.js';
 import './join.js';
+import './player-list.js';
 
 function App() {
   const [error, setError] = useState('');
@@ -59,6 +60,7 @@ function App() {
     <h2>Host a game</h2>
     ${body()}
     <catchphrase-join></catchphrase-join>
+    <catchphrase-player-list></catchphrase-player-list>
   `;
 
   // TODO: Make sure to .lowercase when looking to join via gameid
