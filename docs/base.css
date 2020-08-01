@@ -1,0 +1,25 @@
+html {
+  font-size: 18px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+/* Clearfix to prevent margin collapsing due to child elements, which would mess up the min-height: 100vh above */
+body:before,
+body:after {
+  content: ' ';
+  display: table;
+}
+
+body.dragging {
+  cursor: no-drop;
+}

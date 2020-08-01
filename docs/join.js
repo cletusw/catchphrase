@@ -21,6 +21,7 @@ function Join() {
       return;
     }
 
+    // TODO: Make sure to .lowercase when looking to join via gameid
     console.log('TODO: actually join');
     history.pushState(
       null /* state */,

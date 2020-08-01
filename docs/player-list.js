@@ -5,6 +5,8 @@ import {
   useState,
 } from 'https://cdn.pika.dev/haunted@^4.7.0';
 
+import './sortable-list.js';
+
 function PlayerList() {
   const [players, setPlayers] = useState([]);
 
@@ -16,51 +18,46 @@ function PlayerList() {
     ]);
   }, []);
 
-  function handleDragstart(event) {
-    console.log(event);
-    // event.dataTransfer.dropEffect = 'move';
-  }
-
-  function handleDragover(event) {
-    console.log(event);
-
-    // Have to preventDefault to allow drop
-    event.preventDefault();
-  }
-
-  function handleDrop(event) {
-    console.log(event);
+  function handleSort(event) {
+    console.log('sorting...', event.fromIndex);
   }
 
   return html`
-    <style>
-      ol {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        cursor: grab;
-      }
-      /* TODO: on drag */
-      li:active {
-        cursor: grabbbing;
-      }
-      li:nth-of-type(even) {
-        background: hsl(0, 100%, 80%);
-      }
-      li:nth-of-type(odd) {
-        background: hsl(200, 100%, 80%);
-      }
-    </style>
+    ${styles}
     <ol
-        @dragstart=${handleDragstart}
-        @dragover=${handleDragover}
-        @drop=${handleDrop}>
+        is="catchphrase-sortable-list"
+        @sort=${handleSort}>
       ${players.map((player) => html`
-        <li draggable="true">${player.displayName}</li>
+        <li>${player.displayName}</li>
       `)}
     </ol>
   `;
 }
+
+const styles = html`
+  <style>
+    ol {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: hsl(200, 100%, 80%);
+      cursor: grab;
+      margin: 4px;
+      padding: 8px;
+      user-select: none;
+    }
+    ol.dragging,
+    ol.dragging li {
+      cursor: grabbing;
+    }
+    .sortable-ghost {
+      opacity: 0.2;
+    }
+    .sortable-drag {
+      opacity: 0.9 !important;
+    }
+  </style>
+`;
 
 customElements.define('catchphrase-player-list', component(PlayerList));

@@ -62,8 +62,6 @@ function App() {
     <catchphrase-join></catchphrase-join>
     <catchphrase-player-list></catchphrase-player-list>
   `;
-
-  // TODO: Make sure to .lowercase when looking to join via gameid
 }
 
 customElements.define('catchphrase-app', component(App));
