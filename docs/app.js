@@ -16,9 +16,9 @@ function App() {
   const [error, setError] = useState('');
   const [gameId, setGameId] = useState('');
 
-  useEffect(() => {
-    createGame().then(setGameId, setError);
-  }, []);
+  // useEffect(() => {
+  //   createGame().then(setGameId, setError);
+  // }, []);
 
   function errorView() {
     return html`
