@@ -7,15 +7,26 @@ import {
 
 import './sortable-list.js';
 
+import { db } from './firebase.js';
+
 function PlayerList() {
+  const [error, setError] = useState('');
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    setPlayers([
-      { displayName: 'Bob' },
-      { displayName: 'Alice' },
-      { displayName: 'Darla' },
-    ]);
+    const playersRef = db.ref('players');
+    const callback = playersRef.on(
+      'value',
+      (snapshot) => {
+        console.log('players', snapshot.val().filter(Boolean));
+        // TODO: This has no effect if you reorder then update the server ???
+        setPlayers(snapshot.val().filter(Boolean));
+      },
+      setError,
+    );
+    return function stopEffect() {
+      playersRef.off('value', callback);
+    };
   }, []);
 
   function handleSort(event) {
@@ -24,11 +35,12 @@ function PlayerList() {
 
   return html`
     ${styles}
+    ${error}
     <ol
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
       ${players.map((player) => html`
-        <li>${player.displayName}</li>
+        <li>${player.name}</li>
       `)}
     </ol>
   `;
