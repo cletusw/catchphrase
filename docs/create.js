@@ -47,9 +47,18 @@ function Create() {
   }
 
   return html`
+    ${styles}
     <h2>Host a game</h2>
     ${body()}
   `;
 }
+
+const styles = html`
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+`;
 
 customElements.define('catchphrase-create', component(Create));

@@ -31,19 +31,27 @@ function Join() {
   }
 
   return html`
+    ${styles}
     <h2>Join a game</h2>
     <form @submit="${redirectToJoin}">
-      <label>
-        Enter game id:
-        <input
-            type="text"
-            name="joinGameId"
-            value="abc-def-ghi"><!-- TODO: remove -->
-      </label>
+      <input
+          type="text"
+          aria-label="Game ID"
+          placeholder="Game ID"
+          name="joinGameId"
+          value="abc-def-ghi"><!-- TODO: remove -->
       ${error}
       <button type="submit">Join</button>
     </form>
   `;
 }
+
+const styles = html`
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+`;
 
 customElements.define('catchphrase-join', component(Join));

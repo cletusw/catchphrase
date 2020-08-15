@@ -48,6 +48,9 @@ function PlayerList() {
 
 const styles = html`
   <style>
+    :host {
+      display: block;
+    }
     ol {
       list-style-type: none;
       padding: 0;
