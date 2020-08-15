@@ -7,9 +7,10 @@ Meant to be served on GitHub Pages. In order to serve locally for development:
 
 ## Setup
 
-1. `sudo gem install bundler`
-2. `cd docs`
-3. `bundle install`
+1. `sudo apt install ruby ruby-dev zlib1g-dev`
+2. `sudo gem install bundler`
+3. `cd docs`
+4. `bundle install`
 
 ## Serve
 
