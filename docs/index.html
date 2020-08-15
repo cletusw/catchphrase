@@ -10,7 +10,7 @@
 
     <!-- Must come before all other scripts -->
     <script>
-      let redirectedFrom = sessionStorage.redirectedFrom;
+      let redirectedFrom = sessionStorage.getItem('redirectedFrom');
       delete sessionStorage.redirectedFrom;
       if (redirectedFrom &&
           redirectedFrom !== location.href &&
