@@ -8,6 +8,18 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="base.css">
 
+    <!-- Must come before all other scripts -->
+    <script>
+      let redirectedFrom = sessionStorage.redirectedFrom;
+      delete sessionStorage.redirectedFrom;
+      if (redirectedFrom &&
+          redirectedFrom !== location.href &&
+          !redirectedFrom.endsWith('/catchphrase')) {
+        history.replaceState(null, null, redirectedFrom);
+        // TODO actually join
+      }
+    </script>
+
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
     <script type="module" src="app.js"></script>
