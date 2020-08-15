@@ -10,14 +10,14 @@ import {
 } from './game.js';
 
 function Join() {
-  const [error, setError] = useState('');
-
   function redirectToJoin(event) {
     event.preventDefault();
 
-    const potentialGameId = event.target.elements.joinGameId.value;
+    const joinGameIdInput = event.target.elements.joinGameId;
+    const potentialGameId = joinGameIdInput.value;
     if (!validateGameId(potentialGameId)) {
-      setError(`Invalid game ID: ${potentialGameId}`);
+      joinGameIdInput.setCustomValidity('Invalid Game ID');
+      joinGameIdInput.reportValidity();
       return;
     }
 
@@ -30,17 +30,23 @@ function Join() {
     );
   }
 
+  function resetValidity(event) {
+    event.target.setCustomValidity('');
+  }
+
   return html`
     ${styles}
-    <h2>Join a game</h2>
     <form @submit="${redirectToJoin}">
       <input
           type="text"
           aria-label="Game ID"
           placeholder="Game ID"
           name="joinGameId"
+          size="11"
+          maxlength="11"
+          required
+          @input="${resetValidity}"
           value="abc-def-ghi"><!-- TODO: remove -->
-      ${error}
       <button type="submit">Join</button>
     </form>
   `;
