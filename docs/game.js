@@ -2,8 +2,10 @@ import {db} from './firebase.js';
 
 const GAMEID_LENGTH = 9;
 // Lots of letters removed for decreased ambiguity
-const GAMEID_ALPHABET = '23456789abcdefghijklmnopqrstuvwxyz';
+const GAMEID_ALPHABET = '23456789abcdefghijkmnopqrstuvwxyz';
 const MAX_ATTEMPTS = 3;
+const GAME_ID_REGEX = new RegExp(
+    `[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}`);
 
 function randomString(length, chars) {
   var result = '';
@@ -19,7 +21,7 @@ function createGameId() {
 }
 
 export function validateGameId(potentialGameId) {
-  return /\w{3}-\w{3}-\w{3}/.test(potentialGameId);
+  return GAME_ID_REGEX.test(potentialGameId);
 }
 
 async function getUniqueGameId(games) {

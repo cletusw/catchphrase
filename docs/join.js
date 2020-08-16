@@ -34,6 +34,28 @@ function Join() {
     event.target.setCustomValidity('');
   }
 
+  function addHyphens(event) {
+    if (event.key === '-') {
+      event.preventDefault();
+      return;
+    }
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+      return;
+    }
+
+    const inputElement = event.target;
+
+    // Have to wait a tick or the added hyphen won't show right away
+    setTimeout(() => {
+      if (inputElement.value.length === 3) {
+          inputElement.value += '-';
+      }
+      if (inputElement.value.length === 7) {
+          inputElement.value += '-';
+      }
+    });
+  }
+
   return html`
     ${styles}
     <form @submit="${redirectToJoin}">
@@ -46,6 +68,7 @@ function Join() {
           maxlength="11"
           required
           @input="${resetValidity}"
+          @keydown="${addHyphens}"
           value="abc-def-ghi"><!-- TODO: remove -->
       <button type="submit">Join</button>
     </form>
