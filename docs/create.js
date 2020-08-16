@@ -3,7 +3,7 @@ import {
   html,
   useEffect,
   useState,
-} from 'https://cdn.pika.dev/haunted@^4.7.0';
+} from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import { createGame } from './game.js';
 

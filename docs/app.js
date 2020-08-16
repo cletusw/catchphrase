@@ -1,8 +1,7 @@
 import {
   component,
   html,
-} from 'https://cdn.pika.dev/haunted@^4.7.0';
-import {useMachine} from 'https://cdn.pika.dev/haunted-robot@^0.2.1';
+} from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import './header.js';
 import './create.js';
