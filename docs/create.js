@@ -5,15 +5,23 @@ import {
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
-import { createGame } from './game.js';
+import {
+  createGame,
+  extractGameIdFromUrl,
+} from './game.js';
 
 function Create() {
   const [error, setError] = useState('');
-  const [gameId, setGameId] = useState('');
+  const [gameId, setGameId] = useState(extractGameIdFromUrl(location.href));
 
-  // useEffect(() => {
-  //   createGame().then(setGameId, setError);
-  // }, []);
+  // TODO: Store gameId in context so I can useContext everywhere?
+  useEffect(() => {
+    // createGame().then((gameId) => {
+    //   setGameId(gameId);
+    //   history.replaceState(null, null, gameId);
+    //   console.log('TODO: actually join', gameId);
+    // }, setError);
+  }, []);
 
   function errorView() {
     return html`
@@ -32,7 +40,11 @@ function Create() {
   }
 
   function gameReadyView() {
-    return html` <div>Your game id is: <span>${gameId}</span></div> `;
+    return html`
+      <div>Share this link:</div>
+      <div>
+        <a href="${location.href}">${location.href}</a>&nbsp;<button>Copy</button>
+      </div>`;
   }
 
   function body() {
@@ -48,7 +60,6 @@ function Create() {
 
   return html`
     ${styles}
-    <h2>Host a game</h2>
     ${body()}
   `;
 }

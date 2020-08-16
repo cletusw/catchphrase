@@ -6,28 +6,38 @@ import {
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import {
+  extractGameIdFromUrl,
   validateGameId,
 } from './game.js';
 
 function Join() {
+  useEffect(() => {
+    const popstateHandler = (event) => {
+      const potentialGameId = extractGameIdFromUrl(location.href);
+      if (potentialGameId) {
+        console.log('TODO: actually join', potentialGameId);
+      }
+    };
+
+    window.addEventListener('popstate', popstateHandler);
+    return () => {
+      window.removeEventListener('popstate', popstateHandler);
+    };
+  }, []);
+
   function redirectToJoin(event) {
     event.preventDefault();
 
     const joinGameIdInput = event.target.elements.joinGameId;
-    const potentialGameId = joinGameIdInput.value;
+    const potentialGameId = joinGameIdInput.value.toLowerCase();
     if (!validateGameId(potentialGameId)) {
       joinGameIdInput.setCustomValidity('Invalid Game ID');
       joinGameIdInput.reportValidity();
       return;
     }
 
-    // TODO: Make sure to .lowercase when looking to join via gameid
-    console.log('TODO: actually join');
-    history.pushState(
-      null /* state */,
-      '' /* title */,
-      potentialGameId /* url */,
-    );
+    console.log('TODO: actually join', potentialGameId);
+    history.pushState(null, null, potentialGameId /* url */);
   }
 
   function resetValidity(event) {
@@ -48,10 +58,10 @@ function Join() {
     // Have to wait a tick or the added hyphen won't show right away
     setTimeout(() => {
       if (inputElement.value.length === 3) {
-          inputElement.value += '-';
+        inputElement.value += '-';
       }
       if (inputElement.value.length === 7) {
-          inputElement.value += '-';
+        inputElement.value += '-';
       }
     });
   }

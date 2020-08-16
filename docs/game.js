@@ -4,8 +4,16 @@ const GAMEID_LENGTH = 9;
 // Lots of letters removed for decreased ambiguity
 const GAMEID_ALPHABET = '23456789abcdefghijkmnopqrstuvwxyz';
 const MAX_ATTEMPTS = 3;
+
 const GAME_ID_REGEX = new RegExp(
     `[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}`);
+
+// Case insensitive -- make sure to toLowerCase before using
+const GAME_ID_URL_REGEX = new RegExp('/(' + GAME_ID_REGEX.source + ')$', 'i');
+
+export function extractGameIdFromUrl(url) {
+  return GAME_ID_URL_REGEX.exec(url)?.[1]?.toLowerCase();
+}
 
 function randomString(length, chars) {
   var result = '';
