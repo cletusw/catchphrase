@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
+import { navigateTo } from 'https://cdn.skypack.dev/haunted-router@^0.2.0';
 
 import {
   validateGameId,
@@ -23,11 +24,7 @@ function Join() {
 
     // TODO: Make sure to .lowercase when looking to join via gameid
     console.log('TODO: actually join');
-    history.pushState(
-      null /* state */,
-      '' /* title */,
-      potentialGameId /* url */,
-    );
+    navigateTo(`/catchphrase/${potentialGameId}`);
   }
 
   function resetValidity(event) {
