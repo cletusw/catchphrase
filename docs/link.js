@@ -20,10 +20,12 @@ function Link() {
   }
 
   function gameReadyView() {
+    const urlWithoutProtocol = location.href.replace(/(^\w+:|^)\/\//, '');
+
     return html`
       <div>Share this link:</div>
       <div>
-        <a href="${location.href}">${location.href}</a>&nbsp;<button>Copy</button>
+        <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>&nbsp;<button>Copy</button>
       </div>`;
   }
 
