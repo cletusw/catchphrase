@@ -1,16 +1,23 @@
 import {
   component,
   html,
+  useContext,
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
+import {
+  GameContext,
+} from './game.js';
 import './join.js';
 
 function Header() {
+  const { setGame } = useContext(GameContext);
   const [isJoining, setIsJoining] = useState(false);
 
   function newGameClicked() {
-    console.log('TODO: use state machine');
+    // TODO: Refactor history stuff to separate file instead of using a magical string here & magical relative URLs elsewhere
+    history.pushState(null, null, '/catchphrase/' /* url */);
+    setGame({});
   }
 
   return html`

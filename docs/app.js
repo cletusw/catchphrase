@@ -40,22 +40,18 @@ function App() {
     };
   }, []);
 
-  // On load, create game if necessary
   useEffect(() => {
-    if (!game.id) {
+    // TODO: validate?
+    if (game.id) {
+      console.log('TODO: actually join', game.id);
+    }
+    else {
       createGame().then((gameId) => {
         history.replaceState(null, null, gameId);
         setGame({
           id: gameId,
         });
       }, setError);
-    }
-  }, []);
-
-  useEffect(() => {
-    // TODO: validate?
-    if (game.id) {
-      console.log('TODO: actually join', game.id);
     }
   }, [game]);
 
