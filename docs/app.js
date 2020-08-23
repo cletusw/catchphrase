@@ -56,6 +56,7 @@ function App() {
   }, [game]);
 
   function errorView() {
+    // TODO: Use a toast instead
     return error ? html`
       <div class="alert-error">
         ${error}
@@ -74,6 +75,7 @@ function App() {
   `;
 }
 
+// TODO: Convert all px to rem
 const styles = html`
   <style>
     :host {

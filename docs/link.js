@@ -11,6 +11,19 @@ import {
 function Link() {
   const { game } = useContext(GameContext);
 
+  // TODO: Use a router instead of relying on this components dependency on GameContext & its implicit relationship with the URL
+  const urlWithoutProtocol = location.href.replace(/(^\w+:|^)\/\//, '');
+
+  function handleCopyButtonClick() {
+    navigator.clipboard.writeText(urlWithoutProtocol).then(() => {
+      // TODO: Use a toast instead
+      console.log('Copied link to clipboard');
+    }, () => {
+      // TODO: Use a toast instead
+      console.log('Unable to copy link to clipboard');
+    });
+  }
+
   function noDataView() {
     return html`
       <div>
@@ -20,12 +33,15 @@ function Link() {
   }
 
   function gameReadyView() {
-    const urlWithoutProtocol = location.href.replace(/(^\w+:|^)\/\//, '');
-
     return html`
       <div>Share this link:</div>
       <div>
-        <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>&nbsp;<button>Copy</button>
+        <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>
+        <button
+            class="copy-button"
+            @click=${handleCopyButtonClick}>
+          Copy
+        </button>
       </div>`;
   }
 
@@ -47,6 +63,9 @@ const styles = html`
   <style>
     :host {
       display: block;
+    }
+    .copy-button {
+      margin-left: 4px;
     }
   </style>
 `;
