@@ -29,7 +29,7 @@ function Header() {
           @click=${() => setIsJoining(false)}>
         ⇦
       </button>
-      <h1>Catchphrase</h1>
+      <h1>Catch Phrase</h1>
       <button
           class="new-game-button"
           aria-label="New game"
