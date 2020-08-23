@@ -2,7 +2,6 @@ import {
   component,
   html,
   useContext,
-  useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import {
@@ -10,16 +9,7 @@ import {
 } from './game.js';
 
 function Link() {
-  const [error, setError] = useState('');
   const { game } = useContext(GameContext);
-
-  function errorView() {
-    return html`
-      <div>
-        ${error}
-      </div>
-    `;
-  }
 
   function noDataView() {
     return html`
@@ -38,9 +28,6 @@ function Link() {
   }
 
   function body() {
-    if (error) {
-      return errorView();
-    }
     if (!game.id) {
       // TODO show nothing until 250ms in case data comes back quickly
       return noDataView();
