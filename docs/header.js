@@ -44,7 +44,7 @@ function Header() {
         <span class="long-text">Join game</span>
         <span class="short-text">Join</span>
       </button>
-      <catchphrase-join></catchphrase-join>
+      <catchphrase-join @joined=${() => setIsJoining(false)}></catchphrase-join>
     </header>
   `;
 }

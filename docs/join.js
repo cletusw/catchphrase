@@ -12,7 +12,7 @@ import {
 function Join() {
   const { game, setGame } = useContext(GameContext);
 
-  function redirectToJoin(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const joinGameIdInput = event.target.elements.joinGameId;
@@ -27,6 +27,12 @@ function Join() {
     setGame({
       id: potentialGameId,
     });
+
+    // TODO: Use state machine instead
+    this.dispatchEvent(new CustomEvent('joined', {
+      bubbles: true,
+      compose: true,
+    }));
   }
 
   function resetValidity(event) {
@@ -57,7 +63,7 @@ function Join() {
 
   return html`
     ${styles}
-    <form @submit=${redirectToJoin}>
+    <form @submit=${handleSubmit}>
       <input
           type="text"
           aria-label="Game ID"
