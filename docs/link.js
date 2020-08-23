@@ -1,27 +1,17 @@
 import {
   component,
   html,
-  useEffect,
+  useContext,
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import {
-  createGame,
-  extractGameIdFromUrl,
+  GameContext,
 } from './game.js';
 
-function Create() {
+function Link() {
   const [error, setError] = useState('');
-  const [gameId, setGameId] = useState(extractGameIdFromUrl(location.href));
-
-  // TODO: Store gameId in context so I can useContext everywhere?
-  useEffect(() => {
-    // createGame().then((gameId) => {
-    //   setGameId(gameId);
-    //   history.replaceState(null, null, gameId);
-    //   console.log('TODO: actually join', gameId);
-    // }, setError);
-  }, []);
+  const { game } = useContext(GameContext);
 
   function errorView() {
     return html`
@@ -51,7 +41,7 @@ function Create() {
     if (error) {
       return errorView();
     }
-    if (!gameId) {
+    if (!game.id) {
       // TODO show nothing until 250ms in case data comes back quickly
       return noDataView();
     }
@@ -72,4 +62,4 @@ const styles = html`
   </style>
 `;
 
-customElements.define('catchphrase-create', component(Create));
+customElements.define('catchphrase-link', component(Link));

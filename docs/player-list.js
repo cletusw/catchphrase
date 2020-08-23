@@ -58,7 +58,7 @@ const styles = html`
     li {
       background: hsl(200, 100%, 80%);
       cursor: grab;
-      margin: 4px;
+      margin: 4px 0;
       padding: 8px;
       user-select: none;
     }

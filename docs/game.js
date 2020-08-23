@@ -1,4 +1,13 @@
+import {
+  createContext,
+} from 'https://cdn.skypack.dev/haunted@^4.7.0';
+
 import {db} from './firebase.js';
+
+export const GameContext = createContext({
+  game: {},
+  setGame: () => {},
+});
 
 const GAMEID_LENGTH = 9;
 // Lots of letters removed for decreased ambiguity
@@ -12,7 +21,7 @@ const GAME_ID_REGEX = new RegExp(
 const GAME_ID_URL_REGEX = new RegExp('/(' + GAME_ID_REGEX.source + ')$', 'i');
 
 export function extractGameIdFromUrl(url) {
-  return GAME_ID_URL_REGEX.exec(url)?.[1]?.toLowerCase();
+  return GAME_ID_URL_REGEX.exec(url)?.[1]?.toLowerCase() ?? '';
 }
 
 function randomString(length, chars) {

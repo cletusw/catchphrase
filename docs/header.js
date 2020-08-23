@@ -9,26 +9,31 @@ import './join.js';
 function Header() {
   const [isJoining, setIsJoining] = useState(false);
 
+  function newGameClicked() {
+    console.log('TODO: use state machine');
+  }
+
   return html`
     ${styles}
-    <header class="${isJoining ? 'is-joining' : ''}">
+    <header class=${isJoining ? 'is-joining' : ''}>
       <button
           class="back-button"
           aria-label="Back"
-          @click="${() => setIsJoining(false)}">
+          @click=${() => setIsJoining(false)}>
         ⇦
       </button>
       <h1>Catchphrase</h1>
       <button
           class="new-game-button"
-          aria-label="New game">
+          aria-label="New game"
+          @click=${newGameClicked}>
         <span class="long-text">New game</span>
         <span class="short-text">New</span>
       </button>
       <button
           class="join-game-button"
           aria-label="Join game"
-          @click="${() => setIsJoining(true)}">
+          @click=${() => setIsJoining(true)}>
         <span class="long-text">Join game</span>
         <span class="short-text">Join</span>
       </button>

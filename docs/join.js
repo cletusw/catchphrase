@@ -1,29 +1,16 @@
 import {
   component,
   html,
-  useEffect,
-  useState,
+  useContext,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import {
-  extractGameIdFromUrl,
+  GameContext,
   validateGameId,
 } from './game.js';
 
 function Join() {
-  useEffect(() => {
-    const popstateHandler = (event) => {
-      const potentialGameId = extractGameIdFromUrl(location.href);
-      if (potentialGameId) {
-        console.log('TODO: actually join', potentialGameId);
-      }
-    };
-
-    window.addEventListener('popstate', popstateHandler);
-    return () => {
-      window.removeEventListener('popstate', popstateHandler);
-    };
-  }, []);
+  const { game, setGame } = useContext(GameContext);
 
   function redirectToJoin(event) {
     event.preventDefault();
@@ -36,8 +23,10 @@ function Join() {
       return;
     }
 
-    console.log('TODO: actually join', potentialGameId);
     history.pushState(null, null, potentialGameId /* url */);
+    setGame({
+      id: potentialGameId,
+    });
   }
 
   function resetValidity(event) {
@@ -68,7 +57,7 @@ function Join() {
 
   return html`
     ${styles}
-    <form @submit="${redirectToJoin}">
+    <form @submit=${redirectToJoin}>
       <input
           type="text"
           aria-label="Game ID"
@@ -77,8 +66,8 @@ function Join() {
           size="11"
           maxlength="11"
           required
-          @input="${resetValidity}"
-          @keydown="${addHyphens}"
+          @input=${resetValidity}
+          @keydown=${addHyphens}
           value="abc-def-ghi"><!-- TODO: remove -->
       <button type="submit">Join</button>
     </form>
