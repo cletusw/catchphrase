@@ -40,20 +40,27 @@ function PlayerList() {
   }
 
   function handleNameInput(event) {
-    // Don't allow persisting an empty name (input value itself will be restored by blur handler)
-    if (event.target.value) {
-      const inputValues = Array.from(event.currentTarget.children)
-        .map((nameInput) => nameInput.value.trim());
-      setLocalPlayers(inputValues);
+    const inputIndex = Array.from(event.currentTarget.children)
+      .indexOf(event.target);
+    const trimmedValue = event.target.value.trim();
+    // Don't allow persisting an empty name and ignore leading/trailing whitespace
+    // (input value itself will be synchronized during blur handler)
+    if (trimmedValue && trimmedValue !== localPlayers[inputIndex]) {
+      setLocalPlayers(Object.assign([], localPlayers, {
+        [inputIndex]: trimmedValue,
+      }));
     }
   }
 
   function handleNameBlur(event) {
-    if (!event.target.value) {
+    if (!event.target.value.trim()) {
       // Replace last non-empty value
       const inputIndex = Array.from(event.currentTarget.children)
         .indexOf(event.target);
       event.target.value = localPlayers[inputIndex];
+    }
+    else if (event.target.value !== event.target.value.trim()) {
+      event.target.value = event.target.value.trim();
     }
   }
 
