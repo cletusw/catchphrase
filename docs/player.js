@@ -1,4 +1,4 @@
-function generateNickname() {
+export function generateNickname() {
   const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
   return `Anonymous ${animal}`;
 }
