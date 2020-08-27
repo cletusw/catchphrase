@@ -7,6 +7,7 @@ import {
 
 import {
   GameContext,
+  addNewPlayerToGameIfNecessary,
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
@@ -21,6 +22,7 @@ function App() {
   const [game, setGame] = useState({
     id: extractGameIdFromUrl(location.href),
   });
+  const [localPlayers, setLocalPlayers] = useState([]);
   const gameContext = {
     game,
     setGame,
@@ -43,7 +45,7 @@ function App() {
   useEffect(() => {
     // TODO: validate?
     if (game.id) {
-      console.log('TODO: actually join', game.id);
+      addNewPlayerToGameIfNecessary(game.id, localPlayers, setLocalPlayers);
     }
     else {
       createGame().then((gameId) => {
@@ -70,7 +72,10 @@ function App() {
       <catchphrase-header></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
-      <catchphrase-player-list class="player-list"></catchphrase-player-list>
+      <catchphrase-player-list
+          class="player-list"
+          .localPlayers=${localPlayers}
+          .setLocalPlayers=${setLocalPlayers}></catchphrase-player-list>
     </catchphrase-game-provider>
   `;
 }

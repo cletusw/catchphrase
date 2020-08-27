@@ -2,11 +2,12 @@ import {
   createContext,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
-import {db} from './firebase.js';
+import { db } from './firebase.js';
+import { generateNickname } from './player.js';
 
 export const GameContext = createContext({
   game: {},
-  setGame: () => {},
+  setGame: () => { },
 });
 
 const GAMEID_LENGTH = 9;
@@ -15,7 +16,7 @@ const GAMEID_ALPHABET = '23456789abcdefghijkmnopqrstuvwxyz';
 const MAX_ATTEMPTS = 3;
 
 const GAME_ID_REGEX = new RegExp(
-    `[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}`);
+  `[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}-[${GAMEID_ALPHABET}]{3}`);
 
 // Case insensitive -- make sure to toLowerCase before using
 const GAME_ID_URL_REGEX = new RegExp('/(' + GAME_ID_REGEX.source + ')$', 'i');
@@ -65,4 +66,21 @@ export async function createGame(setGameId) {
   });
 
   return gameId;
+}
+
+export async function addNewPlayerToGameIfNecessary(
+  gameId,
+  localPlayers,
+  setLocalPlayers,
+) {
+  // TODO: Check localStorage if we're already in this game
+  const game = db.ref('games').child(gameId);
+  const playerRef = game.child('players').push();
+  const name = generateNickname();
+  playerRef.set(name);
+  console.log(playerRef.key);
+  setLocalPlayers([...localPlayers, {
+    ref: playerRef,
+    name,
+  }]);
 }

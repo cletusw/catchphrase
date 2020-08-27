@@ -1,7 +1,7 @@
 import {
   component,
   html,
-  useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
@@ -9,15 +9,19 @@ import _ from 'https://cdn.skypack.dev/lodash@^v4.17.20';
 
 import './sortable-list.js';
 
+import {
+  GameContext,
+  addNewPlayerToGameIfNecessary,
+} from './game.js';
 import { db } from './firebase.js';
-import { generateNickname } from './player.js';
 
-function PlayerList() {
+function PlayerList({
+  localPlayers,
+  setLocalPlayers,
+}) {
+  const { game } = useContext(GameContext);
   const [error, setError] = useState('');
   const [players, setPlayers] = useState([]);
-  const [localPlayers, setLocalPlayers] = useState([generateNickname()]);
-
-  useEffect(() => console.log(localPlayers), [localPlayers]);
 
   useEffect(() => {
     const playersRef = db.ref('players');
@@ -45,9 +49,13 @@ function PlayerList() {
     const trimmedValue = event.target.value.trim();
     // Don't allow persisting an empty name and ignore leading/trailing whitespace
     // (input value itself will be synchronized during blur handler)
-    if (trimmedValue && trimmedValue !== localPlayers[inputIndex]) {
+    if (trimmedValue && trimmedValue !== localPlayers[inputIndex].name) {
+      localPlayers[inputIndex].ref.set(trimmedValue);
       setLocalPlayers(Object.assign([], localPlayers, {
-        [inputIndex]: trimmedValue,
+        [inputIndex]: {
+          ...localPlayers[inputIndex],
+          name: trimmedValue,
+        },
       }));
     }
   }
@@ -65,7 +73,7 @@ function PlayerList() {
   }
 
   function addLocalPlayer() {
-    setLocalPlayers(localPlayers.concat(generateNickname()));
+    addNewPlayerToGameIfNecessary(game.id, localPlayers, setLocalPlayers);
   }
 
   return html`
@@ -77,7 +85,7 @@ function PlayerList() {
         @input=${handleNameInput}
         @focusout=${handleNameBlur}>
       ${localPlayers.map((localPlayer) => html`
-        <input type="text" .value=${localPlayer}>
+        <input type="text" .value=${localPlayer.name}>
       `)}
     </div>
     <button
