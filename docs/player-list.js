@@ -26,20 +26,31 @@ function PlayerList({
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    const playersRef = db.ref('players');
-    const callback = playersRef.on(
-      'value',
-      (snapshot) => {
-        console.log('players', snapshot.val().filter(Boolean));
-        // TODO: This has no effect if you reorder then update the server ???
-        setPlayers(snapshot.val().filter(Boolean));
-      },
-      setError,
-    );
-    return function stopEffect() {
-      playersRef.off('value', callback);
-    };
-  }, []);
+    if (game.id) {
+      const playersRef = db.ref('games')
+          .child(game.id)
+          .child('players')
+          // TODO: Order by some child `order` value I create
+          .orderByValue();
+      const callback = playersRef.on(
+        'value',
+        (snapshot) => {
+          const orderedPlayers = [];
+          snapshot.forEach((child) => {
+            orderedPlayers.push({
+              ref: child.ref,
+              name: child.val(),
+            });
+          })
+          setPlayers(orderedPlayers);
+        },
+        setError,
+      );
+      return function stopEffect() {
+        playersRef.off('value', callback);
+      };
+    }
+  }, [game]);
 
   useEffect(() => {
     // TODO: validate?
