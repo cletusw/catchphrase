@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
-import _ from 'https://cdn.skypack.dev/lodash@^v4.17.20';
+// import _ from 'https://cdn.skypack.dev/lodash@^v4.17.20';
 
 import './sortable-list.js';
 
@@ -85,6 +85,10 @@ function PlayerList({
     addNewPlayerToGameIfNecessary(game.id, localPlayers, setLocalPlayers);
   }
 
+  function removePlayer(event) {
+    console.log('TODO: remove player');
+  }
+
   return html`
     ${styles}
     ${error}
@@ -106,7 +110,10 @@ function PlayerList({
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
       ${players.map((player) => html`
-        <li>${player.name}</li>
+        <li>
+          <span class="name">${player.name}</span>
+          <button @click=${removePlayer}>×</button>
+        </li>
       `)}
     </ol>
   `;
@@ -140,6 +147,7 @@ const styles = html`
     li {
       background: hsl(200, 100%, 80%);
       cursor: grab;
+      display: flex;
       padding: 8px;
       user-select: none;
     }
@@ -152,6 +160,9 @@ const styles = html`
     }
     .sortable-drag {
       opacity: 0.9 !important;
+    }
+    .name {
+      flex: 1;
     }
   </style>
 `;

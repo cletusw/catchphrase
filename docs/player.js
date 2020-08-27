@@ -10,7 +10,6 @@ export async function addNewPlayerToGameIfNecessary(
   const playerRef = game.child('players').push();
   const name = generateNickname();
   playerRef.set(name);
-  console.log(playerRef.key);
   setLocalPlayers([...localPlayers, {
     ref: playerRef,
     name,
