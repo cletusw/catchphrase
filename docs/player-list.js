@@ -11,8 +11,10 @@ import './sortable-list.js';
 
 import {
   GameContext,
-  addNewPlayerToGameIfNecessary,
 } from './game.js';
+import {
+  addNewPlayerToGameIfNecessary,
+} from './player.js';
 import { db } from './firebase.js';
 
 function PlayerList({
@@ -38,6 +40,13 @@ function PlayerList({
       playersRef.off('value', callback);
     };
   }, []);
+
+  useEffect(() => {
+    // TODO: validate?
+    if (game.id) {
+      addLocalPlayer();
+    }
+  }, [game]);
 
   function handleSort(event) {
     console.log('sorting...', event.fromIndex);

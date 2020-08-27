@@ -3,7 +3,6 @@ import {
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 
 import { db } from './firebase.js';
-import { generateNickname } from './player.js';
 
 export const GameContext = createContext({
   game: {},
@@ -66,21 +65,4 @@ export async function createGame(setGameId) {
   });
 
   return gameId;
-}
-
-export async function addNewPlayerToGameIfNecessary(
-  gameId,
-  localPlayers,
-  setLocalPlayers,
-) {
-  // TODO: Check localStorage if we're already in this game
-  const game = db.ref('games').child(gameId);
-  const playerRef = game.child('players').push();
-  const name = generateNickname();
-  playerRef.set(name);
-  console.log(playerRef.key);
-  setLocalPlayers([...localPlayers, {
-    ref: playerRef,
-    name,
-  }]);
 }

@@ -7,7 +7,6 @@ import {
 
 import {
   GameContext,
-  addNewPlayerToGameIfNecessary,
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
@@ -43,11 +42,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // TODO: validate?
-    if (game.id) {
-      addNewPlayerToGameIfNecessary(game.id, localPlayers, setLocalPlayers);
-    }
-    else {
+    if (!game.id) {
       createGame().then((gameId) => {
         history.replaceState(null, null, gameId);
         setGame({
