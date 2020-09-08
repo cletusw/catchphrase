@@ -7,8 +7,6 @@ import {
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 // import _ from 'https://cdn.skypack.dev/lodash@^v4.17.20';
 
-import './sortable-list.js';
-
 import {
   GameContext,
 } from './game.js';
@@ -16,6 +14,9 @@ import {
   addNewPlayerToGame,
 } from './player.js';
 import { db } from './firebase.js';
+
+import 'https://cdn.skypack.dev/@material/mwc-dialog@^0.18.0';
+import './sortable-list.js';
 
 function PlayerList() {
   const { game } = useContext(GameContext);
