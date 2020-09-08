@@ -13,17 +13,16 @@ import {
   GameContext,
 } from './game.js';
 import {
-  addNewPlayerToGameIfNecessary,
+  addNewPlayerToGame,
 } from './player.js';
 import { db } from './firebase.js';
 
-function PlayerList({
-  localPlayers,
-  setLocalPlayers,
-}) {
+function PlayerList() {
   const { game } = useContext(GameContext);
   const [error, setError] = useState('');
   const [players, setPlayers] = useState([]);
+  const [isAddingPlayer, setIsAddingPlayer] = useState(false);
+  const [newPlayerName, setNewPlayerName] = useState('');
 
   useEffect(() => {
     if (game.id) {
@@ -55,7 +54,7 @@ function PlayerList({
   useEffect(() => {
     // TODO: validate?
     if (game.id) {
-      addLocalPlayer();
+      // TODO: Open new local player dialog
     }
   }, [game]);
 
@@ -63,13 +62,11 @@ function PlayerList({
     console.log('sorting...', event.fromIndex);
   }
 
-  function handleNameInput(event) {
-    const inputIndex = Array.from(event.currentTarget.children)
-      .indexOf(event.target);
+  function handleNewPlayerNameInput(event) {
     const trimmedValue = event.target.value.trim();
     // Don't allow persisting an empty name and ignore leading/trailing whitespace
     // (input value itself will be synchronized during blur handler)
-    if (trimmedValue && trimmedValue !== localPlayers[inputIndex].name) {
+    if (trimmedValue && trimmedValue !== newPlayerName) {
       localPlayers[inputIndex].ref.set(trimmedValue);
       setLocalPlayers(Object.assign([], localPlayers, {
         [inputIndex]: {
@@ -92,31 +89,44 @@ function PlayerList({
     }
   }
 
-  function addLocalPlayer() {
-    addNewPlayerToGameIfNecessary(game.id, localPlayers, setLocalPlayers);
-  }
-
   function removePlayer(event) {
     console.log('TODO: remove player');
   }
 
+  function handleAddLocalPlayerButtonClick() {
+    const playerRef = addNewPlayerToGame(game.id);
+
+    setIsAddingPlayer(true);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const newPlayerNameInput = event.target.elements.newPlayerName;
+  }
+
+  // @input=${handleNameInput}
+  // @focusout=${handleNameBlur}>
   return html`
     ${styles}
     ${error}
-    <!-- TODO: Use repeat() w/ unique key so player names don't get mixed up -->
-    <div
-        class="local-players"
-        @input=${handleNameInput}
-        @focusout=${handleNameBlur}>
-      ${localPlayers.map((localPlayer) => html`
-        <input type="text" .value=${localPlayer.name}>
-      `)}
-    </div>
     <button
         class="add-local-player-button"
-        @click=${addLocalPlayer}>
+        @click=${handleAddLocalPlayerButtonClick}>
       Add local player
     </button>
+    <!-- TODO: Use modal dialog -->
+    <form
+        class="add-local-player-name-form${isAddingPlayer ? ' is-adding-player' : ''}"
+        @submit=${handleSubmit}>
+      <input
+          type="text"
+          name="newPlayerName"
+          required
+          .value=${newPlayerName}
+          @input=${handleNewPlayerNameInput}>
+      <button type="submit">Join</button>
+    </form>
     <ol
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
@@ -135,16 +145,18 @@ const styles = html`
     :host {
       display: block;
     }
-    .local-players {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
     input {
       padding: 8px;
     }
     .add-local-player-button {
       margin-top: 8px;
+    }
+    .add-local-player-name-form {
+      display: none;
+      gap: 8px;
+    }
+    .add-local-player-name-form.is-adding-player {
+      display: flex;
     }
     ol {
       display: flex;

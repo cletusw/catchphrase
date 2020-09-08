@@ -1,19 +1,14 @@
 import { db } from './firebase.js';
 
-export async function addNewPlayerToGameIfNecessary(
+export function addNewPlayerToGame(
   gameId,
-  localPlayers,
-  setLocalPlayers,
 ) {
-  // TODO: Check localStorage if we're already in this game
   const game = db.ref('games').child(gameId);
   const playerRef = game.child('players').push();
   const name = generateNickname();
   playerRef.set(name);
-  setLocalPlayers([...localPlayers, {
-    ref: playerRef,
-    name,
-  }]);
+  // TODO: Persist to localStorage so we know which players we are
+  return playerRef;
 }
 
 function generateNickname() {

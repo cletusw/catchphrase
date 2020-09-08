@@ -21,7 +21,6 @@ function App() {
   const [game, setGame] = useState({
     id: extractGameIdFromUrl(location.href),
   });
-  const [localPlayers, setLocalPlayers] = useState([]);
   const gameContext = {
     game,
     setGame,
@@ -68,9 +67,7 @@ function App() {
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-player-list
-          class="player-list"
-          .localPlayers=${localPlayers}
-          .setLocalPlayers=${setLocalPlayers}></catchphrase-player-list>
+          class="player-list"></catchphrase-player-list>
     </catchphrase-game-provider>
   `;
 }
