@@ -13,9 +13,11 @@ import {
 import {
   addNewPlayerToGame,
 } from './player.js';
+import {
+  showPlayerRenameDialog,
+} from './player-rename-dialog.js';
 import { db } from './firebase.js';
 
-import 'https://cdn.skypack.dev/@material/mwc-dialog@^0.18.0';
 import './sortable-list.js';
 
 function PlayerList() {
@@ -95,10 +97,12 @@ function PlayerList() {
   }
 
   function handleAddLocalPlayerButtonClick() {
-    const playerRef = addNewPlayerToGame(game.id);
+    // const playerRef = addNewPlayerToGame(game.id);
 
-    setIsAddingPlayer(true);
-  }
+    // setIsAddingPlayer(true);
+
+    showPlayerRenameDialog({ name: 'abc' });
+  };
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -116,7 +120,6 @@ function PlayerList() {
         @click=${handleAddLocalPlayerButtonClick}>
       Add local player
     </button>
-    <!-- TODO: Use modal dialog -->
     <form
         class="add-local-player-name-form${isAddingPlayer ? ' is-adding-player' : ''}"
         @submit=${handleSubmit}>
