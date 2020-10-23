@@ -12,6 +12,7 @@ import {
 } from './game.js';
 import {
   addNewPlayerToGame,
+  generateNickname,
 } from './player.js';
 import {
   showPlayerRenameDialog,
@@ -24,16 +25,14 @@ function PlayerList() {
   const { game } = useContext(GameContext);
   const [error, setError] = useState('');
   const [players, setPlayers] = useState([]);
-  const [isAddingPlayer, setIsAddingPlayer] = useState(false);
-  const [newPlayerName, setNewPlayerName] = useState('');
 
   useEffect(() => {
     if (game.id) {
       const playersRef = db.ref('games')
-          .child(game.id)
-          .child('players')
-          // TODO: Order by some child `order` value I create
-          .orderByValue();
+        .child(game.id)
+        .child('players')
+        // TODO: Order by some child `order` value I create
+        .orderByValue();
       const callback = playersRef.on(
         'value',
         (snapshot) => {
@@ -57,61 +56,30 @@ function PlayerList() {
   useEffect(() => {
     // TODO: validate?
     if (game.id) {
-      // TODO: Open new local player dialog
+      handleAddLocalPlayerButtonClick();
     }
   }, [game]);
 
+  function handleAddLocalPlayerButtonClick() {
+    showPlayerRenameDialog({
+      name: generateNickname(),
+      setName: (name) => {
+        const playerRef = addNewPlayerToGame({
+          name,
+          gameId: game.id,
+        });
+      },
+    });
+  }
+
   function handleSort(event) {
     console.log('sorting...', event.fromIndex);
-  }
-
-  function handleNewPlayerNameInput(event) {
-    const trimmedValue = event.target.value.trim();
-    // Don't allow persisting an empty name and ignore leading/trailing whitespace
-    // (input value itself will be synchronized during blur handler)
-    if (trimmedValue && trimmedValue !== newPlayerName) {
-      localPlayers[inputIndex].ref.set(trimmedValue);
-      setLocalPlayers(Object.assign([], localPlayers, {
-        [inputIndex]: {
-          ...localPlayers[inputIndex],
-          name: trimmedValue,
-        },
-      }));
-    }
-  }
-
-  function handleNameBlur(event) {
-    if (!event.target.value.trim()) {
-      // Replace last non-empty value
-      const inputIndex = Array.from(event.currentTarget.children)
-        .indexOf(event.target);
-      event.target.value = localPlayers[inputIndex];
-    }
-    else if (event.target.value !== event.target.value.trim()) {
-      event.target.value = event.target.value.trim();
-    }
   }
 
   function removePlayer(event) {
     console.log('TODO: remove player');
   }
 
-  function handleAddLocalPlayerButtonClick() {
-    // const playerRef = addNewPlayerToGame(game.id);
-
-    // setIsAddingPlayer(true);
-
-    showPlayerRenameDialog({ name: 'abc' });
-  };
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const newPlayerNameInput = event.target.elements.newPlayerName;
-  }
-
-  // @input=${handleNameInput}
-  // @focusout=${handleNameBlur}>
   return html`
     ${styles}
     ${error}
@@ -120,17 +88,6 @@ function PlayerList() {
         @click=${handleAddLocalPlayerButtonClick}>
       Add local player
     </button>
-    <form
-        class="add-local-player-name-form${isAddingPlayer ? ' is-adding-player' : ''}"
-        @submit=${handleSubmit}>
-      <input
-          type="text"
-          name="newPlayerName"
-          required
-          .value=${newPlayerName}
-          @input=${handleNewPlayerNameInput}>
-      <button type="submit">Join</button>
-    </form>
     <ol
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
@@ -149,18 +106,8 @@ const styles = html`
     :host {
       display: block;
     }
-    input {
-      padding: 8px;
-    }
     .add-local-player-button {
       margin-top: 8px;
-    }
-    .add-local-player-name-form {
-      display: none;
-      gap: 8px;
-    }
-    .add-local-player-name-form.is-adding-player {
-      display: flex;
     }
     ol {
       display: flex;

@@ -4,49 +4,59 @@ import {
 } from 'https://cdn.skypack.dev/haunted@^4.7.0';
 import dialogPolyfill from 'https://cdn.skypack.dev/dialog-polyfill@^v0.5.3';
 
-// Not using <form method="dialog"> because it doesn't respect `required` on Enter keypress
-const dialogContent = ({ name, handleSubmit, handleCancelClick, handleAcceptClick }) => html`
-  <form @submit=${handleSubmit}>
-    <input
-        type="text"
-        name="playerName"
-        placeholder="Player name"
-        required
-        value=${name}>
-    <button @click=${handleCancelClick}>Cancel</button>
-    <button @click=${handleAcceptClick}>Accept</button>
-  </form>`;
+export function showPlayerRenameDialog({ name, setName }) {
+  let dialogElement = document.createElement('dialog');
+  const dialogContent = html`
+    ${styles}
+    <form method="dialog">
+      <label>
+        Player name:
+        <input
+            type="text"
+            name="playerName"
+            placeholder="Player name"
+            required
+            .value=${name}>
+      </label>
+      <div class="buttons">
+        <!-- type="button" required to avoid implicit form submission -->
+        <button type="button" @click=${handleCancelClick}>Cancel</button>
+        <button type="submit" @click=${handleAcceptClick}>Accept</button>
+      </div>
+    </form>`;
+  render(dialogContent, dialogElement);
+  const playerNameElement = dialogElement.querySelector('input[name="playerName"]');
+  document.body.appendChild(dialogElement);
+  dialogPolyfill.registerDialog(dialogElement);
+  dialogElement.addEventListener('close', handleClose);
+  dialogElement.showModal();
+  playerNameElement.select();
 
-export function showPlayerRenameDialog({ name = '', }) {
-  const dialog = document.createElement('dialog');
-  render(dialogContent({
-    name,
-    handleSubmit,
-    handleCancelClick,
-    handleAcceptClick,
-  }), dialog);
-  document.body.appendChild(dialog);
-  dialogPolyfill.registerDialog(dialog);
-  function handleSubmit(event) {
-    event.preventDefault();
-    if (!event.target.checkValidity()) {
+  function handleCancelClick(event) {
+    // dialogElement.querySelector('form').noValidate = true;
+    dialogElement.close('');
+  }
+
+  function handleAcceptClick(event) {
+    dialogElement.returnValue = playerNameElement.value;
+  }
+
+  function handleClose(event) {
+    const updatedPlayerName = dialogElement.returnValue.trim();
+
+    dialogElement.remove();
+    dialogElement = null;
+
+    if (updatedPlayerName) {
+      setName(updatedPlayerName);
     }
   }
-  function handleAcceptClick(event) {
-  }
-  function handleCancelClick(event) {
-    dialog.querySelector('form').noValidate = true;
-    dialog.close('');
-  }
-  dialog.addEventListener('submit', (event) => {
-    dialog.returnValue = event.target.elements.playerName.value;
-  });
-  dialog.addEventListener('close', (event) => {
-    console.log('close', event.returnValue, `"${dialog.returnValue}"`);
-  });
-  // dialog.addEventListener('cancel', (event) => {
-  //   console.log('cancel', event.returnValue, dialog.returnValue);
-  // });
-  dialog.showModal();
-  dialog.querySelector('input[name="playerName"]').select();
 }
+
+const styles = html`
+  <style>
+    .buttons {
+      margin-top: 8px;
+    }
+  </style>
+`;

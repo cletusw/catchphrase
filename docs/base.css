@@ -23,3 +23,12 @@ body:after {
 body.dragging {
   cursor: no-drop;
 }
+
+/**
+ * Shared styles
+ * TODO: Move to shared file and load here and inside each component's Shadow DOM
+ */
+
+input {
+  padding: 8px;
+}
