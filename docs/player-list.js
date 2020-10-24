@@ -27,37 +27,42 @@ function PlayerList() {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    if (game.id) {
-      const playersRef = db.ref('games')
-        .child(game.id)
-        .child('players')
-        .orderByChild('order');
-      const callback = playersRef.on(
-        'value',
-        (snapshot) => {
-          const orderedPlayers = [];
-          snapshot.forEach((child) => {
-            const player = child.val();
-            orderedPlayers.push({
-              id: child.ref.key,
-              name: player.name,
-            });
-          })
-          setPlayers(orderedPlayers);
-        },
-        setError,
-      );
-      return function stopEffect() {
-        playersRef.off('value', callback);
-      };
+    if (!game.id) {
+      return;
     }
+
+    const playersRef = db.ref('games')
+      .child(game.id)
+      .child('players')
+      .orderByChild('order');
+
+    const callback = playersRef.on(
+      'value',
+      (snapshot) => {
+        const orderedPlayers = [];
+        snapshot.forEach((child) => {
+          const player = child.val();
+          orderedPlayers.push({
+            id: child.ref.key,
+            name: player.name,
+          });
+        })
+        setPlayers(orderedPlayers);
+      },
+      setError,
+    );
+
+    return function stopEffect() {
+      playersRef.off('value', callback);
+    };
   }, [game]);
 
   useEffect(() => {
-    // TODO: validate?
-    if (game.id) {
-      handleAddLocalPlayerButtonClick();
+    if (!game.id) {
+      return;
     }
+
+    handleAddLocalPlayerButtonClick();
   }, [game]);
 
   function handleAddLocalPlayerButtonClick() {
@@ -73,6 +78,10 @@ function PlayerList() {
   }
 
   function handleSort(event) {
+    if (!game.id) {
+      throw new Error('Game ID missing');
+    }
+
     console.log('sorting...', event.target.sortable.toArray());
   }
 
