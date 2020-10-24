@@ -100,7 +100,12 @@ function PlayerList() {
   }
 
   function removePlayer(event) {
-    console.log('TODO: remove player');
+    const playerIdToRemove = event.target.closest('[data-id]').dataset.id;
+    db.ref('games')
+      .child(game.id)
+      .child('players')
+      .child(playerIdToRemove)
+      .remove();
   }
 
   return html`

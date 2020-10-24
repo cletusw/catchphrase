@@ -18,6 +18,7 @@ export function addNewPlayerToGame({
     order: ServerValue.TIMESTAMP,
   });
   // TODO: Persist to localStorage so we know which players we are
+  // TODO: Listen to remove events so we can un-persist from localStorage & inform user
   return playerRef;
 }
 
