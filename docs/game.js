@@ -1,6 +1,6 @@
 import {
   createContext,
-} from 'https://jspm.dev/haunted@4.7.0';
+} from 'haunted';
 
 import { db } from './firebase.js';
 

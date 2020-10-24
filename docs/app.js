@@ -3,7 +3,7 @@ import {
   html,
   useEffect,
   useState,
-} from 'https://jspm.dev/haunted@4.7.0';
+} from 'haunted';
 
 import {
   GameContext,

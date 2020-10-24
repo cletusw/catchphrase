@@ -1,4 +1,4 @@
-import Sortable from 'https://jspm.dev/sortablejs@1.10.1';
+import Sortable from 'sortable';
 
 class SortableList extends HTMLOListElement {
   constructor() {

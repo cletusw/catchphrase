@@ -4,11 +4,11 @@ import {
   useContext,
   useEffect,
   useState,
-} from 'https://jspm.dev/haunted@4.7.0';
+} from 'haunted';
 import {
   repeat,
-} from 'https://jspm.dev/lit-html@1/directives/repeat.js'
-import _ from 'https://jspm.dev/lodash@4.17.20';
+} from 'lit-html/directives/repeat.js'
+import _ from 'lodash';
 
 import {
   GameContext,

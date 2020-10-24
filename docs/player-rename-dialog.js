@@ -1,8 +1,8 @@
 import {
   html,
   render,
-} from 'https://jspm.dev/haunted@4.7.0';
-import dialogPolyfill from 'https://jspm.dev/dialog-polyfill@0.5.3';
+} from 'haunted';
+import dialogPolyfill from 'dialog-polyfill';
 
 export function showPlayerRenameDialog({ name, setName }) {
   let dialogElement = document.createElement('dialog');

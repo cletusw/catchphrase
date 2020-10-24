@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/dialog-polyfill@0.5.3/dist/dialog-polyfill.css">
     <link rel="stylesheet" href="base.css">
 
-    <!-- Must come before all other scripts -->
+    <!-- Must come before all other app scripts -->
     <script>
       let redirectedFrom = sessionStorage.getItem('redirectedFrom');
       delete sessionStorage.redirectedFrom;
@@ -21,9 +21,30 @@
       }
     </script>
 
+    <!-- ES Module Import Maps (w/ polyfill) -->
+    <script type="module" src="https://jspm.dev/es-module-shims"></script>
+    <script type="importmap-shim">
+    {
+      "imports": {
+        "dialog-polyfill": "https://jspm.dev/dialog-polyfill@0.5.3",
+        "dialog-polyfill/": "https://jspm.dev/dialog-polyfill@0.5.3/",
+        "haunted": "https://jspm.dev/haunted@4.7.0",
+        "haunted/": "https://jspm.dev/haunted@4.7.0/",
+        "lit-html": "https://jspm.dev/lit-html@1",
+        "lit-html/": "https://jspm.dev/lit-html@1/",
+        "lodash": "https://jspm.dev/lodash@4.17.20",
+        "lodash/": "https://jspm.dev/lodash@4.17.20/",
+        "sortable": "https://jspm.dev/sortablejs@1.10.1",
+        "sortable/": "https://jspm.dev/sortablejs@1.10.1/"
+      }
+    }
+    </script>
+
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
-    <script type="module" src="app.js"></script>
+
+    <!-- "module-shim" causes it to get processed by es-module-shims (for Import Maps support) -->
+    <script type="module-shim" src="app.js"></script>
   </head>
   <body>
     <catchphrase-app></catchphrase-app>
