@@ -6,7 +6,10 @@ export function addNewPlayerToGame({
 }) {
   const game = db.ref('games').child(gameId);
   const playerRef = game.child('players').push();
-  playerRef.set(name);
+  playerRef.set({
+    name,
+    order: firebase.database.ServerValue.TIMESTAMP,
+  });
   // TODO: Persist to localStorage so we know which players we are
   return playerRef;
 }

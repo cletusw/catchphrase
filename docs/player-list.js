@@ -31,16 +31,16 @@ function PlayerList() {
       const playersRef = db.ref('games')
         .child(game.id)
         .child('players')
-        // TODO: Order by some child `order` value I create
-        .orderByValue();
+        .orderByChild('order');
       const callback = playersRef.on(
         'value',
         (snapshot) => {
           const orderedPlayers = [];
           snapshot.forEach((child) => {
+            const player = child.val();
             orderedPlayers.push({
-              ref: child.ref,
-              name: child.val(),
+              id: child.ref.key,
+              name: player.name,
             });
           })
           setPlayers(orderedPlayers);
@@ -73,7 +73,7 @@ function PlayerList() {
   }
 
   function handleSort(event) {
-    console.log('sorting...', event.fromIndex);
+    console.log('sorting...', event.target.sortable.toArray());
   }
 
   function removePlayer(event) {
@@ -92,7 +92,7 @@ function PlayerList() {
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
       ${players.map((player) => html`
-        <li>
+        <li data-id="${player.id}">
           <span class="name">${player.name}</span>
           <button @click=${removePlayer}>×</button>
         </li>
