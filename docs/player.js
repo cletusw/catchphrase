@@ -1,3 +1,7 @@
+import {
+  ServerValue,
+} from 'firebase/database';
+
 import { db } from './db.js';
 
 export function addNewPlayerToGame({
@@ -11,7 +15,7 @@ export function addNewPlayerToGame({
     // Note this causes things to render twice. Initially Firebase uses the current local timestamp
     // (and triggers a 'value' snapshot event), then on the server it gets overwritten to the
     // current server timestamp (causing another 'value' event).
-    order: firebase.database.ServerValue.TIMESTAMP,
+    order: ServerValue.TIMESTAMP,
   });
   // TODO: Persist to localStorage so we know which players we are
   return playerRef;
