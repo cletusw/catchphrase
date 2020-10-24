@@ -5,6 +5,10 @@ import {
   useEffect,
   useState,
 } from 'https://jspm.dev/haunted@4.7.0';
+import {
+  repeat,
+} from 'https://jspm.dev/lit-html@1/directives/repeat.js'
+import _ from 'https://jspm.dev/lodash@4.17.20';
 
 import {
   GameContext,
@@ -44,8 +48,11 @@ function PlayerList() {
           orderedPlayers.push({
             id: child.ref.key,
             name: player.name,
+            order: player.order,
           });
-        })
+        });
+        // console.log('values updated on the server')
+        // console.table(orderedPlayers);
         setPlayers(orderedPlayers);
       },
       setError,
@@ -81,7 +88,15 @@ function PlayerList() {
       throw new Error('Game ID missing');
     }
 
-    console.log('sorting...', event.target.sortable.toArray());
+    const desiredIdOrder = event.target.sortable.toArray();
+    const orderedUpdatePaths = desiredIdOrder.map((id) => `${id}/order`);
+    const existingOrderValues = players.map((player) => player.order);
+    const updates = _.zipObject(orderedUpdatePaths, existingOrderValues);
+
+    db.ref('games')
+      .child(game.id)
+      .child('players')
+      .update(updates);
   }
 
   function removePlayer(event) {
@@ -99,7 +114,7 @@ function PlayerList() {
     <ol
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
-      ${players.map((player) => html`
+      ${repeat(players, (player) => player.id, (player) => html`
         <li data-id="${player.id}">
           <span class="name">${player.name}</span>
           <button @click=${removePlayer}>×</button>
