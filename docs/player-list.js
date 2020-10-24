@@ -68,7 +68,7 @@ function PlayerList() {
       return;
     }
 
-    handleAddLocalPlayerButtonClick();
+    // handleAddLocalPlayerButtonClick();
   }, [game]);
 
   function handleAddLocalPlayerButtonClick() {

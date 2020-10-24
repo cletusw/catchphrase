@@ -18,7 +18,9 @@ function Header() {
     // TODO: Find a way to do this that leaves the previous game id until a new one is ready to avoid a flash of "Loading..."
     // TODO: Refactor history stuff to separate file instead of using a magical string here & magical relative URLs elsewhere
     history.pushState(null, null, '/catchphrase/' /* url */);
-    setGame({});
+    setGame({
+      id: '',
+    });
   }
 
   return html`

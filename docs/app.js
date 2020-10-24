@@ -10,6 +10,7 @@ import {
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
+import './game-view.js';
 import './header.js';
 import './link.js';
 import './player-list.js';
@@ -41,6 +42,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // TODO: Also check if we have a game ID but it isn't in the DB (got deleted)
     if (!game.id) {
       createGame().then((gameId) => {
         history.replaceState(null, null, gameId);
@@ -66,8 +68,8 @@ function App() {
       <catchphrase-header></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
-      <catchphrase-player-list
-          class="player-list"></catchphrase-player-list>
+      <catchphrase-player-list class="player-list"></catchphrase-player-list>
+      <catchphrase-game-view class="game-view"></catchphrase-game-view>
     </catchphrase-game-provider>
   `;
 }
@@ -87,7 +89,8 @@ const styles = html`
     }
     .alert-error,
     .link,
-    .player-list {
+    .player-list,
+    .game-view {
       margin-top: 1rem;
     }
   </style>

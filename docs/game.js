@@ -5,7 +5,9 @@ import {
 import { db } from './db.js';
 
 export const GameContext = createContext({
-  game: {},
+  game: {
+    id: '',
+  },
   setGame: () => { },
 });
 
