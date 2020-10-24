@@ -1,8 +1,8 @@
 import {
   html,
   render,
-} from 'https://cdn.skypack.dev/haunted@^4.7.0';
-import dialogPolyfill from 'https://cdn.skypack.dev/dialog-polyfill@^v0.5.3';
+} from 'https://jspm.dev/haunted@4.7.0';
+import dialogPolyfill from 'https://jspm.dev/dialog-polyfill@0.5.3';
 
 export function showPlayerRenameDialog({ name, setName }) {
   let dialogElement = document.createElement('dialog');

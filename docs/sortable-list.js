@@ -1,6 +1,4 @@
-import {
-  Sortable,
-} from 'https://cdn.skypack.dev/sortablejs@1.10.1/modular/sortable.esm.js';
+import Sortable from 'https://jspm.dev/sortablejs@1.10.1';
 
 class SortableList extends HTMLOListElement {
   constructor() {

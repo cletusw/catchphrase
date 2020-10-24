@@ -4,8 +4,7 @@ import {
   useContext,
   useEffect,
   useState,
-} from 'https://cdn.skypack.dev/haunted@^4.7.0';
-// import _ from 'https://cdn.skypack.dev/lodash@^v4.17.20';
+} from 'https://jspm.dev/haunted@4.7.0';
 
 import {
   GameContext,

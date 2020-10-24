@@ -2,7 +2,7 @@ import {
   component,
   html,
   useContext,
-} from 'https://cdn.skypack.dev/haunted@^4.7.0';
+} from 'https://jspm.dev/haunted@4.7.0';
 
 import {
   GameContext,
