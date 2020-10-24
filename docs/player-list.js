@@ -20,7 +20,7 @@ import {
 import {
   showPlayerRenameDialog,
 } from './player-rename-dialog.js';
-import { db } from './firebase.js';
+import { db } from './db.js';
 
 import './sortable-list.js';
 

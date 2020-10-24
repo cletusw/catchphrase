@@ -2,7 +2,7 @@ import {
   createContext,
 } from 'haunted';
 
-import { db } from './firebase.js';
+import { db } from './db.js';
 
 export const GameContext = createContext({
   game: {},
