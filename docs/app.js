@@ -14,6 +14,7 @@ import './game-view.js';
 import './header.js';
 import './link.js';
 import './player-list.js';
+import './state-machine-demo.js';
 
 customElements.define('catchphrase-game-provider', GameContext.Provider);
 
@@ -70,6 +71,7 @@ function App() {
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-player-list class="player-list"></catchphrase-player-list>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
+      <catchphrase-state-machine-demo></catchphrase-state-machine-demo>
     </catchphrase-game-provider>
   `;
 }
