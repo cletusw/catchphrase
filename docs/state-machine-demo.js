@@ -7,27 +7,48 @@ import {
 } from 'haunted-robot';
 import {
   createMachine,
+  invoke,
+  reduce,
   state,
   transition,
 } from 'robot3';
 
+import {
+  CountdownCanceled,
+  preStartCountdown,
+} from "./countdown-dialog.js";
+
 const machine = createMachine({
-  off: state(
-    transition('toggle', 'on')
+  joining: state(
+    transition('start', 'starting'),
   ),
-  on: state(
-    transition('toggle', 'off')
+  starting: invoke(
+    preStartCountdown,
+    transition('done', 'started'),
+    transition('error', 'joining', reduce((ctx, ev) => {
+      if (ev.error instanceof CountdownCanceled) {
+        return;
+      }
+      throw ev.error;
+    })),
+  ),
+  started: state(
+  //   transition('toggle', 'off'),
+  // ),
+  // stealing: state(
+  //   transition('toggle', 'off'),
   ),
 });
 
 function StateMachineDemo() {
   const [current, send] = useMachine(machine);
+  const state = current.name;
 
   return html`
     ${styles}
-    <div>State: ${current.name}</div>
-    <button @click=${() => send('toggle')}>
-      Toggle
+    <div>State: ${state}</div>
+    <button @click=${() => send('start')}>
+      Start
     </button>
   `;
 }
