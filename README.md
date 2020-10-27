@@ -15,4 +15,4 @@ Meant to be served on GitHub Pages. In order to serve locally for development:
 ## Serve
 
 1. `cd docs`
-2. `bundle exec jekyll serve --incremental`
+2. `bundle exec jekyll serve`
