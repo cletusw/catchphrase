@@ -1,9 +1,3 @@
-import {
-  firebase,
-} from 'firebase/app';
-// Mutates the above `firebase` object to add database stuff
-import 'firebase/database';
-
 const firebaseConfig = {
   apiKey: "AIzaSyD0M-ojBdK5CqlNW_ev6Ap5N8SqrZFbqBg",
   authDomain: "catchprase-419d8.firebaseapp.com",
@@ -14,6 +8,6 @@ const firebaseConfig = {
   appId: "1:413575608766:web:e943324269352a1992a1ef"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-export const db = app.database();
+export const db = firebase.database();
