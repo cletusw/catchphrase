@@ -84,24 +84,58 @@ function PlayerList() {
       .remove();
   }
 
+  // TODO: Implement renaming
+  function joiningView() {
+    return html`
+      <button
+          class="add-local-player-button"
+          @click=${handleAddLocalPlayerButtonClick}>
+        Add local player
+      </button>
+      <ol
+          is="catchphrase-sortable-list"
+          @sort=${handleSort}>
+        ${repeat(orderedPlayers, (player) => player.id, (player) => html`
+          <li data-id="${player.id}">
+            <span class="name">${player.name}</span>
+            <button @click=${removePlayer}>×</button>
+          </li>
+        `)}
+      </ol>
+    `;
+  }
+
+  function startedView() {
+    return html`
+      <ol class="started-players">
+        ${orderedPlayers.map((player) => html`
+          <li class="${player.id === gameState.currentPlayerId ? 'currentPlayer' : ''}">${player.name}</li>
+        `)}
+      </ol>
+    `;
+  }
+
+  function body() {
+    if (!gameId) {
+      return '';
+    }
+
+    switch (gameState.state) {
+      case undefined:
+        return '';
+      case 'joining':
+        return joiningView();
+      case 'started':
+        return startedView();
+      default:
+        throw new Error('Invalid game state');
+    }
+  }
+
   return html`
     ${styles}
     ${error}
-    <button
-        class="add-local-player-button"
-        @click=${handleAddLocalPlayerButtonClick}>
-      Add local player
-    </button>
-    <ol
-        is="catchphrase-sortable-list"
-        @sort=${handleSort}>
-      ${repeat(orderedPlayers, (player) => player.id, (player) => html`
-        <li data-id="${player.id}">
-          <span class="name">${player.name}</span>
-          <button @click=${removePlayer}>×</button>
-        </li>
-      `)}
-    </ol>
+    ${body()}
   `;
 }
 
@@ -124,10 +158,22 @@ const styles = html`
     }
     li {
       background: hsl(200, 100%, 80%);
-      cursor: grab;
       display: flex;
       padding: 8px;
       user-select: none;
+    }
+    .started-players li {
+      display: none;
+    }
+    .started-players li.currentPlayer,
+    .started-players li.currentPlayer + li {
+      display: flex;
+    }
+    .started-players li.currentPlayer + li {
+      opacity: 0.6;
+    }
+    [is="catchphrase-sortable-list"] li {
+      cursor: grab;
     }
     ol.dragging,
     ol.dragging li {

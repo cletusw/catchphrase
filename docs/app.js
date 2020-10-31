@@ -62,7 +62,9 @@ function App() {
 
   return html`
     ${styles}
-    <catchphrase-game-provider .value=${gameContext}>
+    <catchphrase-game-provider
+        class="wrapper state-${gameState.state}"
+        .value=${gameContext}>
       <catchphrase-header></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
@@ -90,6 +92,9 @@ const styles = html`
     .player-list,
     .game-view {
       margin-top: 1rem;
+    }
+    .wrapper:not(.state-joining) .link {
+      display: none;
     }
   </style>
 `;
