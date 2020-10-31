@@ -68,6 +68,26 @@ function GameView() {
       });
   }
 
+  function nextPlayer() {
+    const orderedPlayers = _
+      .chain(gameState.players)
+      .map((value, key) => ({
+        id: key,
+        name: value.name,
+        order: value.order,
+      }))
+      .sortBy((player) => player.order)
+      .value();
+    const currentPlayerIndex =
+        orderedPlayers.findIndex((player) => player.id === gameState.currentPlayerId);
+    const nextPlayerIndex = (currentPlayerIndex + 1) % orderedPlayers.length;
+    games
+      .child(gameId)
+      .update({
+        currentPlayerId: orderedPlayers[nextPlayerIndex].id,
+      });
+  }
+
   function joiningView() {
     return html`
       <button @click=${startGame}>
@@ -79,6 +99,9 @@ function GameView() {
   function startedView() {
     return html`
       <div>Started!</div>
+      <button @click=${nextPlayer}>
+        Got it
+      </button>
       <button @click=${endGame}>
         End game
       </button>
