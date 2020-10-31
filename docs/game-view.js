@@ -10,6 +10,10 @@ import { db } from './db.js';
 import {
   GameContext,
 } from './game.js';
+import {
+  getCurrentMediumWord,
+  nextMediumWord,
+} from './word-generator.js';
 
 const games = db.ref('games');
 
@@ -79,13 +83,15 @@ function GameView() {
       .sortBy((player) => player.order)
       .value();
     const currentPlayerIndex =
-        orderedPlayers.findIndex((player) => player.id === gameState.currentPlayerId);
+      orderedPlayers.findIndex((player) => player.id === gameState.currentPlayerId);
     const nextPlayerIndex = (currentPlayerIndex + 1) % orderedPlayers.length;
     games
       .child(gameId)
       .update({
         currentPlayerId: orderedPlayers[nextPlayerIndex].id,
       });
+
+    nextMediumWord();
   }
 
   function joiningView() {
@@ -98,7 +104,7 @@ function GameView() {
 
   function startedView() {
     return html`
-      <div>Started!</div>
+      <div>${getCurrentMediumWord()}</div>
       <button @click=${nextPlayer}>
         Got it
       </button>
