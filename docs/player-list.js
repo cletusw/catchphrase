@@ -106,12 +106,12 @@ function PlayerList() {
   }
 
   function startedView() {
+    const currentPlayerIndex =
+        orderedPlayers.findIndex((player) => player.id === gameState.currentPlayerId);
+    const nextPlayerIndex = (currentPlayerIndex + 1) % orderedPlayers.length;
     return html`
-      <ol class="started-players">
-        ${orderedPlayers.map((player) => html`
-          <li class="${player.id === gameState.currentPlayerId ? 'currentPlayer' : ''}">${player.name}</li>
-        `)}
-      </ol>
+      <div class="current-player">${orderedPlayers[currentPlayerIndex].name}</div>
+      <div class="next-player">${orderedPlayers[nextPlayerIndex].name}</div>
     `;
   }
 
@@ -162,16 +162,6 @@ const styles = html`
       padding: 8px;
       user-select: none;
     }
-    .started-players li {
-      display: none;
-    }
-    .started-players li.currentPlayer,
-    .started-players li.currentPlayer + li {
-      display: flex;
-    }
-    .started-players li.currentPlayer + li {
-      opacity: 0.6;
-    }
     [is="catchphrase-sortable-list"] li {
       cursor: grab;
     }
@@ -187,6 +177,20 @@ const styles = html`
     }
     .name {
       flex: 1;
+    }
+    .current-player,
+    .next-player {
+      padding: 0 0 0 1.33333rem;
+      position: relative;
+    }
+    .current-player::before {
+      content: '⇨';
+      left: 0;
+      position: absolute;
+    }
+    .next-player {
+      margin-top: 4px;
+      opacity: 0.6;
     }
   </style>
 `;
