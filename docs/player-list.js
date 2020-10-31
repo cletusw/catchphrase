@@ -25,51 +25,26 @@ import { db } from './db.js';
 import './sortable-list.js';
 
 function PlayerList() {
-  const { game } = useContext(GameContext);
+  const { gameId, gameState } = useContext(GameContext);
   const [error, setError] = useState('');
-  const [players, setPlayers] = useState([]);
+
+  const orderedPlayers = _
+    .chain(gameState.players)
+    .map((value, key) => ({
+      id: key,
+      name: value.name,
+      order: value.order,
+    }))
+    .sortBy((player) => player.order)
+    .value();
 
   useEffect(() => {
-    if (!game.id) {
-      return;
-    }
-
-    const playersRef = db.ref('games')
-      .child(game.id)
-      .child('players')
-      .orderByChild('order');
-
-    const callback = playersRef.on(
-      'value',
-      (snapshot) => {
-        const orderedPlayers = [];
-        snapshot.forEach((child) => {
-          const player = child.val();
-          orderedPlayers.push({
-            id: child.ref.key,
-            name: player.name,
-            order: player.order,
-          });
-        });
-        // console.log('values updated on the server')
-        // console.table(orderedPlayers);
-        setPlayers(orderedPlayers);
-      },
-      setError,
-    );
-
-    return function stopEffect() {
-      playersRef.off('value', callback);
-    };
-  }, [game]);
-
-  useEffect(() => {
-    if (!game.id) {
+    if (!gameId) {
       return;
     }
 
     // handleAddLocalPlayerButtonClick();
-  }, [game]);
+  }, [gameId]);
 
   function handleAddLocalPlayerButtonClick() {
     showPlayerRenameDialog({
@@ -77,24 +52,25 @@ function PlayerList() {
       setName: (name) => {
         const playerRef = addNewPlayerToGame({
           name,
-          gameId: game.id,
+          gameId,
         });
       },
     });
   }
 
   function handleSort(event) {
-    if (!game.id) {
+    if (!gameId) {
       throw new Error('Game ID missing');
     }
 
     const desiredIdOrder = event.target.sortable.toArray();
     const orderedUpdatePaths = desiredIdOrder.map((id) => `${id}/order`);
-    const existingOrderValues = players.map((player) => player.order);
+    const existingOrderValues = orderedPlayers.map((player) => player.order);
     const updates = _.zipObject(orderedUpdatePaths, existingOrderValues);
+    // console.table(updates);
 
     db.ref('games')
-      .child(game.id)
+      .child(gameId)
       .child('players')
       .update(updates);
   }
@@ -102,7 +78,7 @@ function PlayerList() {
   function removePlayer(event) {
     const playerIdToRemove = event.target.closest('[data-id]').dataset.id;
     db.ref('games')
-      .child(game.id)
+      .child(gameId)
       .child('players')
       .child(playerIdToRemove)
       .remove();
@@ -119,7 +95,7 @@ function PlayerList() {
     <ol
         is="catchphrase-sortable-list"
         @sort=${handleSort}>
-      ${repeat(players, (player) => player.id, (player) => html`
+      ${repeat(orderedPlayers, (player) => player.id, (player) => html`
         <li data-id="${player.id}">
           <span class="name">${player.name}</span>
           <button @click=${removePlayer}>×</button>

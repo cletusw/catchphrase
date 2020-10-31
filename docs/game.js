@@ -5,10 +5,13 @@ import {
 import { db } from './db.js';
 
 export const GameContext = createContext({
-  game: {
-    id: '',
+  gameId: '',
+  setGameId: () => { },
+  gameState: {
+    state: '',
+    players: [],
   },
-  setGame: () => { },
+  setGameState: () => { },
 });
 
 const GAMEID_LENGTH = 9;
@@ -55,7 +58,7 @@ async function getUniqueGameId(games) {
   throw new Error('Unable to create a game. Please try again later.');
 }
 
-export async function createGame(setGameId) {
+export async function createGame() {
   const games = db.ref('games');
 
   const gameId = await getUniqueGameId(games);
@@ -63,7 +66,6 @@ export async function createGame(setGameId) {
 
   games.child(gameId).set({
     state: 'joining',
-    members: [],
   });
 
   return gameId;

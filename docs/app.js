@@ -14,26 +14,25 @@ import './game-view.js';
 import './header.js';
 import './link.js';
 import './player-list.js';
-import './state-machine-demo.js';
 
 customElements.define('catchphrase-game-provider', GameContext.Provider);
 
 function App() {
   const [error, setError] = useState('');
-  const [game, setGame] = useState({
-    id: extractGameIdFromUrl(location.href),
-  });
+  const [gameId, setGameId] = useState(
+    extractGameIdFromUrl(location.href));
+  const [gameState, setGameState] = useState({});
   const gameContext = {
-    game,
-    setGame,
+    gameId,
+    setGameId,
+    gameState,
+    setGameState,
   };
 
   // Handle back button events
   useEffect(() => {
     const popstateHandler = (event) => {
-      setGame({
-        id: extractGameIdFromUrl(location.href),
-      });
+      setGameId(extractGameIdFromUrl(location.href));
     };
 
     window.addEventListener('popstate', popstateHandler);
@@ -44,15 +43,13 @@ function App() {
 
   useEffect(() => {
     // TODO: Also check if we have a game ID but it isn't in the DB (got deleted)
-    if (!game.id) {
+    if (!gameId) {
       createGame().then((gameId) => {
         history.replaceState(null, null, gameId);
-        setGame({
-          id: gameId,
-        });
+        setGameId(gameId);
       }, setError);
     }
-  }, [game]);
+  }, [gameId]);
 
   function errorView() {
     // TODO: Use a toast instead
@@ -71,7 +68,6 @@ function App() {
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-player-list class="player-list"></catchphrase-player-list>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
-      <catchphrase-state-machine-demo></catchphrase-state-machine-demo>
     </catchphrase-game-provider>
   `;
 }

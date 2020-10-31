@@ -2,6 +2,7 @@ import {
   component,
   html,
   useContext,
+  useEffect,
 } from 'haunted';
 
 import { db } from './db.js';
@@ -9,18 +10,51 @@ import {
   GameContext,
 } from './game.js';
 
+const games = db.ref('games');
+
 function GameView() {
-  const { game } = useContext(GameContext);
+  const {
+    gameId,
+    gameState,
+    setGameState,
+  } = useContext(GameContext);
+
+  useEffect(() => {
+    if (!gameId) {
+      return;
+    }
+
+    const gameRef = games
+      .child(gameId);
+
+    const callback = gameRef.on('value', (snapshot) => {
+      const gameState = snapshot.val();
+      console.log('updating local game state', gameState);
+      setGameState(gameState);
+    });
+
+    return function stopEffect() {
+      gameRef.off('value', callback);
+    };
+  }, [gameId]);
 
   function startGame() {
-    if (!game.id) {
+    if (!gameId) {
       throw new Error('Game ID missing');
     }
 
-    db.ref('games')
-      .child(game.id)
+    games
+      .child(gameId)
       .update({
         state: 'started',
+      });
+  }
+
+  function endGame() {
+    games
+      .child(gameId)
+      .update({
+        state: 'joining',
       });
   }
 
@@ -35,16 +69,18 @@ function GameView() {
   function startedView() {
     return html`
       <div>Started!</div>
+      <button @click=${endGame}>
+        End game
+      </button>
     `;
   }
 
   function body() {
-    if (!game.id) {
+    if (!gameId) {
       return '';
     }
 
-    // TODO: Implement game.state
-    switch (game.state) {
+    switch (gameState.state) {
       case undefined:
         return '';
       case 'joining':

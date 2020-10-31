@@ -10,7 +10,7 @@ import {
 } from './game.js';
 
 function Join() {
-  const { game, setGame } = useContext(GameContext);
+  const { gameId, setGameId } = useContext(GameContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -24,9 +24,7 @@ function Join() {
     }
 
     history.pushState(null, null, potentialGameId /* url */);
-    setGame({
-      id: potentialGameId,
-    });
+    setGameId(potentialGameId);
 
     // TODO: Use state machine instead
     this.dispatchEvent(new CustomEvent('joined', {

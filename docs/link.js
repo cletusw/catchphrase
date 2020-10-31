@@ -9,7 +9,7 @@ import {
 } from './game.js';
 
 function Link() {
-  const { game } = useContext(GameContext);
+  const { gameId } = useContext(GameContext);
 
   // TODO: Use a router instead of relying on this components dependency on GameContext & its implicit relationship with the URL
   const urlWithoutProtocol = location.href.replace(/(^\w+:|^)\/\//, '');
@@ -46,7 +46,7 @@ function Link() {
   }
 
   function body() {
-    if (!game.id) {
+    if (!gameId) {
       // TODO show nothing until 250ms in case data comes back quickly
       return noDataView();
     }
