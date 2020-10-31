@@ -1,12 +1,5 @@
-let currentMediumWordsListIndex = 0;
-
-export function getCurrentMediumWord() {
-  const word = mediumWordsList[currentMediumWordsListIndex];
-  return word;
-}
-
-export function nextMediumWord() {
-  currentMediumWordsListIndex = (currentMediumWordsListIndex + 1) % mediumWordsList.length;
+export function getMediumWord(unboundedIndex) {
+  return mediumWordsList[unboundedIndex % mediumWordsList.length];
 }
 
 // Fisher-Yates shuffling algorithm
@@ -31,7 +24,10 @@ function shuffle(array) {
 }
 
 // Medium Catch Phrase words, from https://www.thegamegal.com/word-generator/
-const mediumWordsList = shuffle(['factory',
+// TODO: Use deterministic shuffle + seed so lists are synced between clients
+// https://github.com/yixizhang/seed-shuffle/blob/master/index.js
+const mediumWordsList = shuffle([
+  'factory',
   'marathon',
   'boil',
   'lighthouse',

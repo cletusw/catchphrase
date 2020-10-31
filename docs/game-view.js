@@ -11,8 +11,7 @@ import {
   GameContext,
 } from './game.js';
 import {
-  getCurrentMediumWord,
-  nextMediumWord,
+  getMediumWord,
 } from './word-generator.js';
 
 const games = db.ref('games');
@@ -58,6 +57,7 @@ function GameView() {
         currentPlayerId: _.minBy(
           Object.keys(gameState.players),
           (key) => gameState.players[key].order),
+        currentWordUnboundedIndex: 0,
       });
   }
 
@@ -69,6 +69,7 @@ function GameView() {
         preStartCountdownStartTime: null,
         roundDurationSeconds: null,
         currentPlayerId: null,
+        currentWordUnboundedIndex: null,
       });
   }
 
@@ -90,8 +91,15 @@ function GameView() {
       .update({
         currentPlayerId: orderedPlayers[nextPlayerIndex].id,
       });
+    nextWord();
+  }
 
-    nextMediumWord();
+  function nextWord() {
+    games
+      .child(gameId)
+      .update({
+        currentWordUnboundedIndex: gameState.currentWordUnboundedIndex + 1
+      });
   }
 
   function joiningView() {
@@ -104,9 +112,12 @@ function GameView() {
 
   function startedView() {
     return html`
-      <div>${getCurrentMediumWord()}</div>
+      <div>${getMediumWord(gameState.currentWordUnboundedIndex)}</div>
       <button @click=${nextPlayer}>
         Got it
+      </button>
+      <button @click=${nextWord}>
+        Skip
       </button>
       <button @click=${endGame}>
         End game
