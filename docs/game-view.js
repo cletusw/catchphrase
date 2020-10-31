@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
 } from 'haunted';
+import _ from 'lodash';
 
 import { db } from './db.js';
 import {
@@ -47,6 +48,12 @@ function GameView() {
       .child(gameId)
       .update({
         state: 'started',
+        preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
+        // TODO: Make random & segmented
+        roundDurationSeconds: 6,
+        currentPlayerId: _.minBy(
+          Object.keys(gameState.players),
+          (key) => gameState.players[key].order),
       });
   }
 
@@ -55,6 +62,9 @@ function GameView() {
       .child(gameId)
       .update({
         state: 'joining',
+        preStartCountdownStartTime: null,
+        roundDurationSeconds: null,
+        currentPlayerId: null,
       });
   }
 
