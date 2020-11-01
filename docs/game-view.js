@@ -112,7 +112,7 @@ function GameView() {
 
   function startedView() {
     return html`
-      <div>${getMediumWord(gameState.currentWordUnboundedIndex)}</div>
+      <div>${getMediumWord(gameState.currentWordUnboundedIndex, 3)}</div>
       <button @click=${nextPlayer}>
         Got it
       </button>

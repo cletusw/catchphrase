@@ -1,32 +1,33 @@
-export function getMediumWord(unboundedIndex) {
-  return mediumWordsList[unboundedIndex % mediumWordsList.length];
+import memoizeOne from "memoize-one";
+
+export function getMediumWord(unboundedIndex, shuffleSeed) {
+  return memoizedShuffle(mediumWordsList, shuffleSeed)[unboundedIndex % mediumWordsList.length];
 }
 
-// Fisher-Yates shuffling algorithm
-// https://stackoverflow.com/a/2450976/1431146
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
+// Deterministic shuffle w/ seed
+// https://github.com/yixizhang/seed-shuffle/blob/master/index.js
+const memoizedShuffle = memoizeOne(function shuffle(array, seed) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+  seed = seed || 1;
+  let random = function() {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+  };
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
-
     // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
+    randomIndex = Math.floor(random() * currentIndex);
     currentIndex -= 1;
-
     // And swap it with the current element.
     temporaryValue = array[currentIndex];
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = temporaryValue;
   }
-
   return array;
-}
+});
 
 // Medium Catch Phrase words, from https://www.thegamegal.com/word-generator/
-// TODO: Use deterministic shuffle + seed so lists are synced between clients
-// https://github.com/yixizhang/seed-shuffle/blob/master/index.js
-const mediumWordsList = shuffle([
+const mediumWordsList = [
   'factory',
   'marathon',
   'boil',
@@ -612,4 +613,4 @@ const mediumWordsList = shuffle([
   'veil',
   'dock',
   'pharmacy',
-]);
+];
