@@ -170,6 +170,7 @@ function GameView() {
 
   function startedView() {
     return html`
+      <div class="timer round-segment-${roundSegment}"></div>
       <div>
         ${getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed)}
       </div>
@@ -212,6 +213,22 @@ const styles = html`
   <style>
     :host {
       display: block;
+    }
+    .timer {
+      width: 100px;
+      height: 100px;
+    }
+    .timer.round-segment--1 {
+      visibility: hidden;
+    }
+    .timer.round-segment-0 {
+      background-color: green;
+    }
+    .timer.round-segment-1 {
+      background-color: yellow;
+    }
+    .timer.round-segment-2 {
+      background-color: red;
     }
   </style>
 `;
