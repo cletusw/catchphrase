@@ -3,6 +3,7 @@ import {
   html,
   useContext,
   useEffect,
+  useState,
 } from 'haunted';
 import _ from 'lodash';
 
@@ -22,6 +23,20 @@ function GameView() {
     gameState,
     setGameState,
   } = useContext(GameContext);
+  const [timerId, setTimerId] = useState(0);
+
+  useEffect(() => {
+    if (gameState.state === 'started' && !timerId) {
+      setTimerId(setTimeout(() => {
+        games
+          .child(gameId)
+          .update({
+            state: 'joining',
+          });
+        setTimerId(0);
+      }, 4000));
+    }
+  }, [gameState])
 
   useEffect(() => {
     if (!gameId) {
@@ -73,6 +88,11 @@ function GameView() {
         currentWordUnboundedIndex: null,
         wordListShuffleSeed: null,
       });
+
+    if (timerId) {
+      clearTimeout(timerId);
+      setTimerId(0);
+    }
   }
 
   function nextPlayer() {
