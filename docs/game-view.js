@@ -55,6 +55,7 @@ function GameView() {
               state: 'joining',
             });
           setTimerId(0);
+          setRoundSegment(-1);
         }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
       }
       else {
@@ -129,6 +130,8 @@ function GameView() {
       clearTimeout(timerId);
       setTimerId(0);
     }
+
+    setRoundSegment(-1);
   }
 
   function nextPlayer() {
@@ -214,21 +217,33 @@ const styles = html`
     :host {
       display: block;
     }
+    @keyframes toggle-opacity {
+      0% {
+        opacity: 0;
+      }
+      35% {
+        opacity: 0;
+      }
+      35.001% {
+        opacity: 1;
+      }
+    }
     .timer {
-      width: 100px;
-      height: 100px;
+      background-color: blue;
+      width: 24px;
+      height: 24px;
     }
     .timer.round-segment--1 {
       visibility: hidden;
     }
     .timer.round-segment-0 {
-      background-color: green;
+      animation: toggle-opacity 0.5s infinite;
     }
     .timer.round-segment-1 {
-      background-color: yellow;
+      animation: toggle-opacity 0.3s infinite;
     }
     .timer.round-segment-2 {
-      background-color: red;
+      animation: toggle-opacity 0.2s infinite;
     }
   </style>
 `;
