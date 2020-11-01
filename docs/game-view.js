@@ -24,9 +24,21 @@ function GameView() {
     setGameState,
   } = useContext(GameContext);
   const [timerId, setTimerId] = useState(0);
+  const [serverTimeOffset, setServerTimeOffset] = useState(0);
+
+  useEffect(() => {
+    const offsetRef = db.ref('.info/serverTimeOffset');
+    offsetRef.on('value', function (snapshot) {
+      setServerTimeOffset(snapshot.val());
+    });
+  }, []);
 
   useEffect(() => {
     if (gameState.state === 'started' && !timerId) {
+      const estimatedServerTimeMs = Date.now() + serverTimeOffset;
+      const roundTimerEndTimeMs =
+        gameState.preStartCountdownStartTime +
+        (4 + gameState.roundDurationSeconds) * 1000;
       setTimerId(setTimeout(() => {
         games
           .child(gameId)
@@ -34,9 +46,14 @@ function GameView() {
             state: 'joining',
           });
         setTimerId(0);
-      }, 4000));
+      }, roundTimerEndTimeMs - estimatedServerTimeMs));
     }
-  }, [gameState])
+
+    return function stopEffect() {
+      clearTimeout(timerId);
+      setTimerId(0);
+    };
+  }, [gameState, serverTimeOffset])
 
   useEffect(() => {
     if (!gameId) {
@@ -48,7 +65,7 @@ function GameView() {
 
     const callback = gameRef.on('value', (snapshot) => {
       const gameState = snapshot.val();
-      console.log('updating local game state', gameState);
+      // console.log('updating local game state', gameState);
       setGameState(gameState);
     });
 
