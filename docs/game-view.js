@@ -105,7 +105,7 @@ function GameView() {
         state: 'started',
         preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
         // TODO: Make random & different each segment
-        roundSegmentDurationSeconds: 3,
+        roundSegmentDurationSeconds: 4,
         currentPlayerId: _.minBy(
           Object.keys(gameState.players),
           (key) => gameState.players[key].order),
@@ -229,21 +229,24 @@ const styles = html`
       }
     }
     .timer {
-      background-color: blue;
       width: 24px;
       height: 24px;
+      border-radius: 50%;
     }
     .timer.round-segment--1 {
       visibility: hidden;
     }
     .timer.round-segment-0 {
-      animation: toggle-opacity 0.5s infinite;
+      animation: toggle-opacity 0.6s infinite;
+      background-color: hsl(120 100% 48%);
     }
     .timer.round-segment-1 {
-      animation: toggle-opacity 0.3s infinite;
+      animation: toggle-opacity 0.4s infinite;
+      background-color: hsl(60 100% 48%);
     }
     .timer.round-segment-2 {
       animation: toggle-opacity 0.2s infinite;
+      background-color: hsl(0 100% 48%);
     }
   </style>
 `;
