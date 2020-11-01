@@ -15,6 +15,9 @@ import {
   getMediumWord,
 } from './word-generator.js';
 
+const PRE_START_COUNTDOWN_SECONDS = 4;
+const ROUND_SEGMENTS = 3;
+
 const games = db.ref('games');
 
 function GameView() {
@@ -25,6 +28,7 @@ function GameView() {
   } = useContext(GameContext);
   const [timerId, setTimerId] = useState(0);
   const [serverTimeOffset, setServerTimeOffset] = useState(0);
+  const [roundSegment, setRoundSegment] = useState(-1);
 
   useEffect(() => {
     const offsetRef = db.ref('.info/serverTimeOffset');
@@ -36,24 +40,39 @@ function GameView() {
   useEffect(() => {
     if (gameState.state === 'started' && !timerId) {
       const estimatedServerTimeMs = Date.now() + serverTimeOffset;
-      const roundTimerEndTimeMs =
+      let roundSegmentTimerEndTimeMs =
         gameState.preStartCountdownStartTime +
-        (4 + gameState.roundDurationSeconds) * 1000;
-      setTimerId(setTimeout(() => {
-        games
-          .child(gameId)
-          .update({
-            state: 'joining',
-          });
-        setTimerId(0);
-      }, roundTimerEndTimeMs - estimatedServerTimeMs));
+        PRE_START_COUNTDOWN_SECONDS * 1000;
+      for (let i = -1; i < roundSegment; i++) {
+        roundSegmentTimerEndTimeMs += gameState.roundSegmentDurationSeconds * 1000;
+      }
+      if (roundSegment + 1 === ROUND_SEGMENTS) {
+        // console.log('last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
+        setTimerId(setTimeout(() => {
+          games
+            .child(gameId)
+            .update({
+              state: 'joining',
+            });
+          setTimerId(0);
+        }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
+      }
+      else {
+        // console.log('not last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
+        setTimerId(setTimeout(() => {
+          setTimerId(0);
+          setRoundSegment((roundSegment) => roundSegment + 1);
+        }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
+      }
     }
 
     return function stopEffect() {
-      clearTimeout(timerId);
-      setTimerId(0);
+      if (timerId) {
+        clearTimeout(timerId);
+        setTimerId(0);
+      }
     };
-  }, [gameState, serverTimeOffset])
+  }, [gameState, serverTimeOffset, roundSegment])
 
   useEffect(() => {
     if (!gameId) {
@@ -84,8 +103,8 @@ function GameView() {
       .update({
         state: 'started',
         preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
-        // TODO: Make random & segmented
-        roundDurationSeconds: 6,
+        // TODO: Make random & different each segment
+        roundSegmentDurationSeconds: 3,
         currentPlayerId: _.minBy(
           Object.keys(gameState.players),
           (key) => gameState.players[key].order),
@@ -100,7 +119,7 @@ function GameView() {
       .update({
         state: 'joining',
         preStartCountdownStartTime: null,
-        roundDurationSeconds: null,
+        roundSegmentDurationSeconds: null,
         currentPlayerId: null,
         currentWordUnboundedIndex: null,
         wordListShuffleSeed: null,
