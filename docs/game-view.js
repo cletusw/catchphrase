@@ -58,6 +58,7 @@ function GameView() {
           Object.keys(gameState.players),
           (key) => gameState.players[key].order),
         currentWordUnboundedIndex: 0,
+        wordListShuffleSeed: _.random(0, Number.MAX_SAFE_INTEGER),
       });
   }
 
@@ -70,6 +71,7 @@ function GameView() {
         roundDurationSeconds: null,
         currentPlayerId: null,
         currentWordUnboundedIndex: null,
+        wordListShuffleSeed: null,
       });
   }
 
@@ -112,7 +114,9 @@ function GameView() {
 
   function startedView() {
     return html`
-      <div>${getMediumWord(gameState.currentWordUnboundedIndex, 3)}</div>
+      <div>
+        ${getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed)}
+      </div>
       <button @click=${nextPlayer}>
         Got it
       </button>
