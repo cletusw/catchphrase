@@ -208,20 +208,22 @@ function GameView() {
     return html`
       <div class="timer round-segment-${roundSegment}"></div>
       <div class="main${currentPlayerIsLocal ? ' current-player-is-local' : ''}">
-        <div>
+        <div class="the-word">
           ${currentPlayerIsLocal ?
               getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed) :
               ''}
         </div>
-        <button @click=${nextPlayer}>
-          Got it
-        </button>
-        <button @click=${nextWord}>
-          Skip
-        </button>
-        <button @click=${endGame}>
-          End game
-        </button>
+        <div class="buttons">
+          <button @click=${nextPlayer}>
+            Got it
+          </button>
+          <button @click=${nextWord}>
+            Skip
+          </button>
+          <button @click=${endGame}>
+            End game
+          </button>
+        </div>
       </div>
     `;
   }
@@ -284,6 +286,11 @@ const styles = html`
     .timer.round-segment-2 {
       animation: toggle-opacity 0.2s infinite;
       background-color: hsl(0 100% 48%);
+    }
+    .the-word {
+      font-size: 2rem;
+      padding: 3rem 1rem;
+      text-align: center;
     }
     .main:not(.current-player-is-local) {
       display: none;
