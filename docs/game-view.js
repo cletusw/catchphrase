@@ -15,6 +15,7 @@ import { db } from './db.js';
 import {
   GameContext,
 } from './game.js';
+import { isLocalPlayer } from './player.js';
 import {
   getMediumWord,
 } from './word-generator.js';
@@ -203,20 +204,25 @@ function GameView() {
   }
 
   function startedView() {
+    const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
     return html`
       <div class="timer round-segment-${roundSegment}"></div>
-      <div>
-        ${getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed)}
+      <div class="main${currentPlayerIsLocal ? ' current-player-is-local' : ''}">
+        <div>
+          ${currentPlayerIsLocal ?
+              getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed) :
+              ''}
+        </div>
+        <button @click=${nextPlayer}>
+          Got it
+        </button>
+        <button @click=${nextWord}>
+          Skip
+        </button>
+        <button @click=${endGame}>
+          End game
+        </button>
       </div>
-      <button @click=${nextPlayer}>
-        Got it
-      </button>
-      <button @click=${nextWord}>
-        Skip
-      </button>
-      <button @click=${endGame}>
-        End game
-      </button>
     `;
   }
 
@@ -278,6 +284,9 @@ const styles = html`
     .timer.round-segment-2 {
       animation: toggle-opacity 0.2s infinite;
       background-color: hsl(0 100% 48%);
+    }
+    .main:not(.current-player-is-local) {
+      display: none;
     }
   </style>
 `;
