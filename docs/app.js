@@ -10,6 +10,7 @@ import {
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
+import './game-timer.js';
 import './game-view.js';
 import './header.js';
 import './link.js';
@@ -73,6 +74,7 @@ function App() {
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-player-list class="player-list"></catchphrase-player-list>
+      <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
     </catchphrase-game-provider>
   `;
@@ -94,10 +96,14 @@ const styles = html`
     .alert-error,
     .link,
     .player-list,
+    .game-timer,
     .game-view {
       margin-top: 1rem;
     }
     .wrapper:not(.state-joining) .link {
+      display: none;
+    }
+    .wrapper:not(.state-started) .game-timer {
       display: none;
     }
   </style>
