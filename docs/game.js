@@ -102,7 +102,7 @@ export function startGame(gameId, gameState) {
       state: 'started',
       preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
       // TODO: Make random & different each segment
-      roundSegmentDurationSeconds: 4,
+      roundSegmentDurationSeconds: 3,
       currentPlayerId: _.minBy(
         Object.keys(gameState.players),
         (key) => gameState.players[key].order),

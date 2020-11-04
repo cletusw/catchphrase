@@ -3,13 +3,9 @@ import {
   html,
   useContext,
   useEffect,
-  useState,
 } from 'haunted';
+import _ from 'lodash';
 
-import {
-  CountdownCanceled,
-  preStartCountdown,
-} from "./countdown-dialog.js";
 import { db } from './db.js';
 import {
   GameContext,
@@ -21,8 +17,6 @@ import {
   getMediumWord,
 } from './word-generator.js';
 
-const PRE_START_COUNTDOWN_SECONDS = 3;
-const ROUND_SEGMENTS = 3;
 const MINIMUM_PLAYERS_REQUIRED = 2; // TODO: 4 after implementing teams
 
 const games = db.ref('games');
@@ -33,72 +27,6 @@ function GameView() {
     gameState,
     setGameState,
   } = useContext(GameContext);
-  const [roundSegmentTimerId, setRoundSegmentTimerId] = useState(0);
-  const [serverTimeOffset, setServerTimeOffset] = useState(0);
-  const [roundSegment, setRoundSegment] = useState(null);
-
-  useEffect(() => {
-    const offsetRef = db.ref('.info/serverTimeOffset');
-    offsetRef.on('value', function (snapshot) {
-      setServerTimeOffset(snapshot.val());
-    });
-  }, []);
-
-  async function gameTimers() {
-    // If you change this function, make sure to update the useEffect hook watch array below
-    if (roundSegment == null) {
-      setRoundSegment(-1);
-      try {
-        // TODO: Actually compute PRE_START_COUNTDOWN_SECONDS (e.g. in case of page refresh)
-        await preStartCountdown(PRE_START_COUNTDOWN_SECONDS);
-        setRoundSegment(0);
-      } catch (error) {
-        if (!(error instanceof CountdownCanceled)) {
-          throw error;
-        }
-        endCurrentGame();
-      }
-    }
-    else if (roundSegment >= 0 && !roundSegmentTimerId) {
-      const estimatedServerTimeMs = Date.now() + serverTimeOffset;
-      let roundSegmentTimerEndTimeMs =
-        gameState.preStartCountdownStartTime +
-        PRE_START_COUNTDOWN_SECONDS * 1000;
-      for (let i = 0; i <= roundSegment; i++) {
-        roundSegmentTimerEndTimeMs += gameState.roundSegmentDurationSeconds * 1000;
-      }
-      if (roundSegment + 1 === ROUND_SEGMENTS) {
-        // console.log('last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
-        setRoundSegmentTimerId(setTimeout(() => {
-          // TODO: between rounds instead of ending game
-          endCurrentGame();
-        }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
-      }
-      else {
-        // console.log('not last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
-        setRoundSegmentTimerId(setTimeout(() => {
-          setRoundSegmentTimerId(0);
-          setRoundSegment((roundSegment) => roundSegment + 1);
-        }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (gameState.state === 'started') {
-      gameTimers(); // Note: This is asynchronous
-    }
-    else if (roundSegment) {
-      setRoundSegment(null);
-    }
-
-    return function stopEffect() {
-      if (roundSegmentTimerId) {
-        clearTimeout(roundSegmentTimerId);
-        setRoundSegmentTimerId(0);
-      }
-    };
-  }, [gameState, serverTimeOffset, roundSegment])
 
   useEffect(() => {
     if (!gameId) {
@@ -183,12 +111,9 @@ function GameView() {
   function startedView() {
     const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
     return html`
-      <div class="timer round-segment-${roundSegment}"></div>
       <div class="main${currentPlayerIsLocal ? ' current-player-is-local' : ''}">
         <div class="the-word">
-          ${currentPlayerIsLocal ?
-              getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed) :
-              ''}
+          ${currentPlayerIsLocal ? getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed) : ''}
         </div>
         <div class="buttons">
           <button @click=${nextPlayer}>
@@ -216,9 +141,10 @@ function GameView() {
       case 'joining':
         return joiningView();
       case 'started':
-        if (roundSegment < 0) {
-          return '';
-        }
+        // TODO: Fix so this is possible
+        // if (roundSegment < 0) {
+        //   return '';
+        // }
         return startedView();
       default:
         throw new Error('Invalid game state');
