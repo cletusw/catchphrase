@@ -1,8 +1,11 @@
 import {
   createContext,
 } from 'haunted';
+import _ from 'lodash';
 
 import { db } from './db.js';
+
+const games = db.ref('games');
 
 export const GameContext = createContext({
   gameId: '',
@@ -59,8 +62,6 @@ async function getUniqueGameId(games) {
 }
 
 export async function createGame() {
-  const games = db.ref('games');
-
   const gameId = await getUniqueGameId(games);
   // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -69,4 +70,43 @@ export async function createGame() {
   });
 
   return gameId;
+}
+
+export function endGame(gameId, gameState) {
+  if (!gameId) {
+    throw new Error('Game ID missing');
+  }
+  if (!gameState) {
+    throw new Error('Game state missing');
+  }
+
+  games
+    .child(gameId)
+    .set({
+      players: gameState.players,
+      state: 'joining',
+    });
+}
+
+export function startGame(gameId, gameState) {
+  if (!gameId) {
+    throw new Error('Game ID missing');
+  }
+  if (!gameState) {
+    throw new Error('Game state missing');
+  }
+
+  games
+    .child(gameId)
+    .update({
+      state: 'started',
+      preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
+      // TODO: Make random & different each segment
+      roundSegmentDurationSeconds: 4,
+      currentPlayerId: _.minBy(
+        Object.keys(gameState.players),
+        (key) => gameState.players[key].order),
+      currentWordUnboundedIndex: 0,
+      wordListShuffleSeed: _.random(0, Number.MAX_SAFE_INTEGER),
+    });
 }

@@ -5,7 +5,6 @@ import {
   useEffect,
   useState,
 } from 'haunted';
-import _ from 'lodash';
 
 import {
   CountdownCanceled,
@@ -14,6 +13,8 @@ import {
 import { db } from './db.js';
 import {
   GameContext,
+  endGame,
+  startGame,
 } from './game.js';
 import { isLocalPlayer } from './player.js';
 import {
@@ -55,7 +56,7 @@ function GameView() {
         if (!(error instanceof CountdownCanceled)) {
           throw error;
         }
-        endGame();
+        endCurrentGame();
       }
     }
     else if (roundSegment >= 0 && !roundSegmentTimerId) {
@@ -70,7 +71,7 @@ function GameView() {
         // console.log('last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
         setRoundSegmentTimerId(setTimeout(() => {
           // TODO: between rounds instead of ending game
-          endGame();
+          endCurrentGame();
         }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
       }
       else {
@@ -126,33 +127,12 @@ function GameView() {
     };
   }, [gameId]);
 
-  function startGame() {
-    if (!gameId) {
-      throw new Error('Game ID missing');
-    }
-
-    games
-      .child(gameId)
-      .update({
-        state: 'started',
-        preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
-        // TODO: Make random & different each segment
-        roundSegmentDurationSeconds: 4,
-        currentPlayerId: _.minBy(
-          Object.keys(gameState.players),
-          (key) => gameState.players[key].order),
-        currentWordUnboundedIndex: 0,
-        wordListShuffleSeed: _.random(0, Number.MAX_SAFE_INTEGER),
-      });
+  function startCurrentGame() {
+    startGame(gameId, gameState);
   }
 
-  function endGame() {
-    games
-      .child(gameId)
-      .set({
-        players: gameState.players,
-        state: 'joining',
-      });
+  function endCurrentGame() {
+    endGame(gameId, gameState);
   }
 
   function nextPlayer() {
@@ -191,7 +171,7 @@ function GameView() {
     return html`
       <button
           ?disabled=${!minimumPlayersRequirementMet}
-          @click=${startGame}>
+          @click=${startCurrentGame}>
         Start game
       </button>
       ${minimumPlayersRequirementMet ? '' : html`
@@ -217,7 +197,7 @@ function GameView() {
           <button @click=${nextWord}>
             Skip
           </button>
-          <button @click=${endGame}>
+          <button @click=${endCurrentGame}>
             End game
           </button>
         </div>
