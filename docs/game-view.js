@@ -21,6 +21,7 @@ import {
 
 const PRE_START_COUNTDOWN_SECONDS = 3;
 const ROUND_SEGMENTS = 3;
+const MINIMUM_PLAYERS_REQUIRED = 2; // TODO: 4 after implementing teams
 
 const games = db.ref('games');
 
@@ -48,7 +49,7 @@ function GameView() {
       try {
         await preStartCountdown(PRE_START_COUNTDOWN_SECONDS);
         setRoundSegment(0);
-      } catch(error) {
+      } catch (error) {
         if (!(error instanceof CountdownCanceled)) {
           throw error;
         }
@@ -196,10 +197,18 @@ function GameView() {
   }
 
   function joiningView() {
+    const minimumPlayersRequirementMet =
+      gameState.players &&
+      Object.keys(gameState.players).length >= MINIMUM_PLAYERS_REQUIRED;
     return html`
-      <button @click=${startGame}>
+      <button
+          ?disabled=${!minimumPlayersRequirementMet}
+          @click=${startGame}>
         Start game
       </button>
+      ${minimumPlayersRequirementMet ? '' : html`
+        <span>${MINIMUM_PLAYERS_REQUIRED}+ players required</span>
+      `}
     `;
   }
 
