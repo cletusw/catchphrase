@@ -118,7 +118,7 @@ function PlayerList() {
       <div class="current-player${isLocalPlayer(currentPlayer.id) ? ' local-player' : ''}">
         <span class="name">${currentPlayer.name}</span>
       </div>
-      <div class="next-player${isLocalPlayer(currentPlayer.id) ? ' local-player' : ''}"">
+      <div class="next-player${isLocalPlayer(nextPlayer.id) ? ' local-player' : ''}"">
         <span class="name">${nextPlayer.name}</span>
       </div>
     `;
