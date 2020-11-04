@@ -6,33 +6,25 @@ import dialogPolyfill from 'dialog-polyfill';
 
 export class CountdownCanceled { }
 
-export async function preStartCountdown() {
-  let cancelCountdown = false;
-  const updateCountdown = showCountdownDialog(3, () => {
-    cancelCountdown = true;
+export async function preStartCountdown(seconds) {
+  await new Promise((resolve, reject) => {
+    let timerId = 0;
+    let currentCount = seconds;
+    const updateCountdown = showCountdownDialog(currentCount, () => {
+      clearTimeout(timerId);
+      timerId = 0;
+      return reject(new CountdownCanceled());
+    });
+    const timerTick = () => {
+      currentCount--;
+      updateCountdown(currentCount);
+      if (currentCount === 0) {
+        return resolve();
+      }
+      timerId = setTimeout(timerTick, 1000); // TODO: Compute actual value
+    };
+    timerId = setTimeout(timerTick, 1000); // TODO: Compute actual value
   });
-  for await (let currentCount of countdown(3)) {
-    // TODO: Find some way to interrupt instead of waiting up to a full second
-    if (cancelCountdown) {
-      throw new CountdownCanceled();
-    }
-    updateCountdown(currentCount);
-  }
-  if (cancelCountdown) {
-    throw new CountdownCanceled();
-  }
-  updateCountdown(0);
-}
-
-async function* countdown(seconds) {
-  for (let i = seconds; i > 0; i--) {
-    yield i;
-    await wait(1000);
-  }
-}
-
-async function wait(milliseconds) {
-  await new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function showCountdownDialog(initialValue, cancelCallback) {
