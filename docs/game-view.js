@@ -48,6 +48,7 @@ function GameView() {
     if (roundSegment == null) {
       setRoundSegment(-1);
       try {
+        // TODO: Actually compute PRE_START_COUNTDOWN_SECONDS (e.g. in case of page refresh)
         await preStartCountdown(PRE_START_COUNTDOWN_SECONDS);
         setRoundSegment(0);
       } catch (error) {
@@ -85,6 +86,9 @@ function GameView() {
   useEffect(() => {
     if (gameState.state === 'started') {
       gameTimers(); // Note: This is asynchronous
+    }
+    else if (roundSegment) {
+      setRoundSegment(null);
     }
 
     return function stopEffect() {
@@ -149,13 +153,6 @@ function GameView() {
         players: gameState.players,
         state: 'joining',
       });
-
-    if (roundSegmentTimerId) {
-      clearTimeout(roundSegmentTimerId);
-      setRoundSegmentTimerId(0);
-    }
-
-    setRoundSegment(null);
   }
 
   function nextPlayer() {
