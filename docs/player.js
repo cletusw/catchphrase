@@ -24,12 +24,8 @@ export function generateNickname() {
   return `Anonymous ${animal}`;
 }
 
-function addPlayerToLocalStorage(id) {
+export function getLocalPlayerIds() {
   let players = [];
-
-  if (!id || typeof id !== 'string') {
-    throw new Error('Invalid player ID');
-  }
 
   if (localStorage.getItem('localPlayers')) {
     try {
@@ -44,8 +40,22 @@ function addPlayerToLocalStorage(id) {
     }
   }
 
+  return players;
+}
+
+function addPlayerToLocalStorage(id) {
+  if (!id || typeof id !== 'string') {
+    throw new Error('Invalid player ID');
+  }
+
+  let players = getLocalPlayerIds();
+
   players.push(id);
 
+  setPlayersInLocalStorage(players);
+}
+
+function setPlayersInLocalStorage(players) {
   localStorage.setItem('localPlayers', JSON.stringify(players));
 }
 

@@ -16,6 +16,7 @@ import {
 import {
   addNewPlayerToGame,
   generateNickname,
+  getLocalPlayerIds,
 } from './player.js';
 import {
   showPlayerRenameDialog,
@@ -86,6 +87,7 @@ function PlayerList() {
 
   // TODO: Implement renaming
   function joiningView() {
+    const localPlayers = getLocalPlayerIds();
     return html`
       <button
           class="add-local-player-button"
@@ -96,7 +98,9 @@ function PlayerList() {
           is="catchphrase-sortable-list"
           @sort=${handleSort}>
         ${repeat(orderedPlayers, (player) => player.id, (player) => html`
-          <li data-id="${player.id}">
+          <li
+              class="${localPlayers.includes(player.id) ? 'local-player' : ''}"
+              data-id="${player.id}">
             <span class="name">${player.name}</span>
             <button @click=${removePlayer}>×</button>
           </li>
@@ -109,9 +113,16 @@ function PlayerList() {
     const currentPlayerIndex =
         orderedPlayers.findIndex((player) => player.id === gameState.currentPlayerId);
     const nextPlayerIndex = (currentPlayerIndex + 1) % orderedPlayers.length;
+    const currentPlayer = orderedPlayers[currentPlayerIndex];
+    const nextPlayer = orderedPlayers[nextPlayerIndex];
+    const localPlayers = getLocalPlayerIds();
     return html`
-      <div class="current-player">${orderedPlayers[currentPlayerIndex].name}</div>
-      <div class="next-player">${orderedPlayers[nextPlayerIndex].name}</div>
+      <div class="current-player${localPlayers.includes(currentPlayer.id) ? ' local-player' : ''}">
+        <span class="name">${currentPlayer.name}</span>
+      </div>
+      <div class="next-player${localPlayers.includes(currentPlayer.id) ? ' local-player' : ''}"">
+        <span class="name">${nextPlayer.name}</span>
+      </div>
     `;
   }
 
@@ -177,6 +188,12 @@ const styles = html`
     }
     .name {
       flex: 1;
+    }
+    .local-player .name::after {
+      content: '(local)';
+      font-size: 0.7rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
     }
     .current-player,
     .next-player {
