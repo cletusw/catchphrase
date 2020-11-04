@@ -85,6 +85,14 @@ function GameView() {
 
     const callback = gameRef.on('value', (snapshot) => {
       const gameState = snapshot.val();
+
+      if (!gameState) {
+        gameRef.set({
+          state: 'joining',
+        });
+        return;
+      }
+
       // console.log('updating local game state', gameState);
       setGameState(gameState);
     });

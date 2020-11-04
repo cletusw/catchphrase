@@ -11,7 +11,7 @@ import {
 import './join.js';
 
 function Header() {
-  const { setGameId } = useContext(GameContext);
+  const { setGameId, setGameState } = useContext(GameContext);
   const [isJoining, setIsJoining] = useState(false);
 
   function newGameClicked() {
@@ -19,6 +19,7 @@ function Header() {
     // TODO: Refactor history stuff to separate file instead of using a magical string here & magical relative URLs elsewhere
     history.pushState(null, null, '/catchphrase/' /* url */);
     setGameId('');
+    setGameState({});
   }
 
   return html`

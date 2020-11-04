@@ -29,6 +29,10 @@ function App() {
     setGameState,
   };
 
+  if (!gameState) {
+    throw new Error('Invalid gameState');
+  }
+
   // Handle back button events
   useEffect(() => {
     const popstateHandler = (event) => {
