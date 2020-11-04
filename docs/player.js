@@ -1,5 +1,7 @@
 import { db } from './db.js';
 
+// TODO: Listen to firebase player remove events so we can un-persist from localStorage & inform user
+
 export function addNewPlayerToGame({
   name = generateNickname(),
   gameId,
@@ -13,14 +15,38 @@ export function addNewPlayerToGame({
     // current server timestamp (causing another 'value' event).
     order: firebase.database.ServerValue.TIMESTAMP,
   });
-  // TODO: Persist to localStorage so we know which players we are
-  // TODO: Listen to remove events so we can un-persist from localStorage & inform user
+  addPlayerToLocalStorage(playerRef.key);
   return playerRef;
 }
 
 export function generateNickname() {
   const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
   return `Anonymous ${animal}`;
+}
+
+function addPlayerToLocalStorage(id) {
+  let players = [];
+
+  if (!id || typeof id !== 'string') {
+    throw new Error('Invalid player ID');
+  }
+
+  if (localStorage.getItem('localPlayers')) {
+    try {
+      players = JSON.parse(localStorage.getItem('localPlayers'));
+    } catch(e) {
+      localStorage.removeItem('localPlayers');
+    }
+
+    if (!Array.isArray(players)) {
+      localStorage.removeItem('localPlayers');
+      players = [];
+    }
+  }
+
+  players.push(id);
+
+  localStorage.setItem('localPlayers', JSON.stringify(players));
 }
 
 const ANIMALS = [
