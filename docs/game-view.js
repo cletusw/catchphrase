@@ -53,13 +53,7 @@ function GameView() {
         if (!(error instanceof CountdownCanceled)) {
           throw error;
         }
-        games
-          .child(gameId)
-          .update({
-            state: 'joining',
-          });
-        setRoundSegmentTimerId(0);
-        setRoundSegment(null);
+        endGame();
       }
     }
     else if (roundSegment >= 0 && !roundSegmentTimerId) {
@@ -150,13 +144,9 @@ function GameView() {
   function endGame() {
     games
       .child(gameId)
-      .update({
+      .set({
+        players: gameState.players,
         state: 'joining',
-        preStartCountdownStartTime: null,
-        roundSegmentDurationSeconds: null,
-        currentPlayerId: null,
-        currentWordUnboundedIndex: null,
-        wordListShuffleSeed: null,
       });
 
     if (roundSegmentTimerId) {
