@@ -24,23 +24,34 @@ export function generateNickname() {
   return `Anonymous ${animal}`;
 }
 
-export function getLocalPlayerIds() {
-  let players = [];
+export function isLocalPlayer(id) {
+  return getLocalPlayerIds().includes(id);
+}
 
-  if (localStorage.getItem('localPlayers')) {
+function getLocalPlayerIds() {
+  return getLocalStorageArray(
+    localStorage.getItem('localPlayers'),
+    clearPlayersInLocalStorage);
+}
+
+// Memoizing has no benefit even with 8 players
+function getLocalStorageArray(storageItem, clearStorageItem) {
+  let parsedArray = [];
+
+  if (storageItem) {
     try {
-      players = JSON.parse(localStorage.getItem('localPlayers'));
-    } catch(e) {
-      localStorage.removeItem('localPlayers');
+      parsedArray = JSON.parse(storageItem);
+    } catch (e) {
+      clearStorageItem();
     }
 
-    if (!Array.isArray(players)) {
-      localStorage.removeItem('localPlayers');
-      players = [];
+    if (!Array.isArray(parsedArray)) {
+      clearStorageItem();
+      parsedArray = [];
     }
   }
 
-  return players;
+  return parsedArray;
 }
 
 function addPlayerToLocalStorage(id) {
@@ -57,6 +68,10 @@ function addPlayerToLocalStorage(id) {
 
 function setPlayersInLocalStorage(players) {
   localStorage.setItem('localPlayers', JSON.stringify(players));
+}
+
+function clearPlayersInLocalStorage() {
+  localStorage.removeItem('localPlayers');
 }
 
 const ANIMALS = [

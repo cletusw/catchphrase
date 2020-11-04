@@ -16,7 +16,7 @@ import {
 import {
   addNewPlayerToGame,
   generateNickname,
-  getLocalPlayerIds,
+  isLocalPlayer,
 } from './player.js';
 import {
   showPlayerRenameDialog,
@@ -87,7 +87,6 @@ function PlayerList() {
 
   // TODO: Implement renaming
   function joiningView() {
-    const localPlayers = getLocalPlayerIds();
     return html`
       <button
           class="add-local-player-button"
@@ -99,7 +98,7 @@ function PlayerList() {
           @sort=${handleSort}>
         ${repeat(orderedPlayers, (player) => player.id, (player) => html`
           <li
-              class="${localPlayers.includes(player.id) ? 'local-player' : ''}"
+              class="${isLocalPlayer(player.id) ? 'local-player' : ''}"
               data-id="${player.id}">
             <span class="name">${player.name}</span>
             <button @click=${removePlayer}>×</button>
@@ -115,12 +114,11 @@ function PlayerList() {
     const nextPlayerIndex = (currentPlayerIndex + 1) % orderedPlayers.length;
     const currentPlayer = orderedPlayers[currentPlayerIndex];
     const nextPlayer = orderedPlayers[nextPlayerIndex];
-    const localPlayers = getLocalPlayerIds();
     return html`
-      <div class="current-player${localPlayers.includes(currentPlayer.id) ? ' local-player' : ''}">
+      <div class="current-player${isLocalPlayer(currentPlayer.id) ? ' local-player' : ''}">
         <span class="name">${currentPlayer.name}</span>
       </div>
-      <div class="next-player${localPlayers.includes(currentPlayer.id) ? ' local-player' : ''}"">
+      <div class="next-player${isLocalPlayer(currentPlayer.id) ? ' local-player' : ''}"">
         <span class="name">${nextPlayer.name}</span>
       </div>
     `;
