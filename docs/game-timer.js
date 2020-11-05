@@ -16,6 +16,7 @@ import {
   GameContext,
   endGame,
 } from './game.js';
+import { useServerTimeOffset } from './server-time-offset.js';
 
 const PRE_START_COUNTDOWN_SECONDS = 3;
 const ROUND_SEGMENTS = 3;
@@ -26,16 +27,9 @@ function GameTimer() {
     gameState,
   } = useContext(GameContext);
   const [roundSegmentTimerId, setRoundSegmentTimerId] = useState(0);
-  const [serverTimeOffset, setServerTimeOffset] = useState(0);
+  const serverTimeOffset = useServerTimeOffset(db, 0);
   // TODO: Find some way to derive this from gameState
   const [roundSegment, setRoundSegment] = useState(null);
-
-  useEffect(() => {
-    const offsetRef = db.ref('.info/serverTimeOffset');
-    offsetRef.on('value', function (snapshot) {
-      setServerTimeOffset(snapshot.val());
-    });
-  }, []);
 
   async function gameTimers() {
     // If you change this function, make sure to update the useEffect hook watch array below
