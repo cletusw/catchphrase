@@ -7,18 +7,14 @@ import {
 } from 'haunted';
 import _ from 'lodash';
 
-import {
-  CountdownCanceled,
-  preStartCountdown,
-} from "./countdown-dialog.js";
 import { db } from './db.js';
 import {
   GameContext,
+  PRE_START_COUNTDOWN_SECONDS,
   endGame,
 } from './game.js';
 import { useServerTimeOffset } from './server-time-offset.js';
 
-const PRE_START_COUNTDOWN_SECONDS = 3;
 const ROUND_SEGMENTS = 3;
 
 function GameTimer() {
@@ -28,25 +24,17 @@ function GameTimer() {
   } = useContext(GameContext);
   const [roundSegmentTimerId, setRoundSegmentTimerId] = useState(0);
   const serverTimeOffset = useServerTimeOffset(db, 0);
-  // TODO: Find some way to derive this from gameState
   const [roundSegment, setRoundSegment] = useState(null);
 
-  async function gameTimers() {
-    // If you change this function, make sure to update the useEffect hook watch array below
+  // If you change this function, make sure to update the useEffect hook watch array below
+  function gameTimers() {
     if (roundSegment == null) {
+      // Even if it should be higher, the upcoming computed setTimeouts will just be < 0 and
+      // immediately trigger
       setRoundSegment(-1);
-      try {
-        // TODO: Actually compute PRE_START_COUNTDOWN_SECONDS (e.g. in case of page refresh)
-        await preStartCountdown(PRE_START_COUNTDOWN_SECONDS);
-        setRoundSegment(0);
-      } catch (error) {
-        if (!(error instanceof CountdownCanceled)) {
-          throw error;
-        }
-        endGame(gameId, gameState);
-      }
     }
-    else if (roundSegment >= 0 && !roundSegmentTimerId) {
+
+    if (roundSegment != null && !roundSegmentTimerId) {
       const estimatedServerTimeMs = Date.now() + serverTimeOffset;
       let roundSegmentTimerEndTimeMs =
         gameState.preStartCountdownStartTime +
@@ -73,7 +61,7 @@ function GameTimer() {
 
   useEffect(() => {
     if (gameState.state === 'started') {
-      gameTimers(); // Note: This is asynchronous
+      gameTimers();
     }
     else if (roundSegment) {
       setRoundSegment(null);
@@ -85,7 +73,7 @@ function GameTimer() {
         setRoundSegmentTimerId(0);
       }
     };
-  }, [gameState, serverTimeOffset, roundSegment]);
+  }, [gameState, serverTimeOffset, roundSegment, roundSegmentTimerId]);
 
   return html`
     ${styles}

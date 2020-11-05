@@ -17,6 +17,8 @@ export const GameContext = createContext({
   setGameState: () => { },
 });
 
+export const PRE_START_COUNTDOWN_SECONDS = 3;
+
 const GAMEID_LENGTH = 9;
 // Lots of letters removed for decreased ambiguity
 const GAMEID_ALPHABET = '23456789abcdefghijkmnopqrstuvwxyz';

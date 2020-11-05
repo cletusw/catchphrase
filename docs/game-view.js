@@ -3,16 +3,23 @@ import {
   html,
   useContext,
   useEffect,
+  useState,
 } from 'haunted';
 import _ from 'lodash';
 
+import {
+  CountdownCanceled,
+  preStartCountdown,
+} from "./countdown-dialog.js";
 import { db } from './db.js';
 import {
   GameContext,
+  PRE_START_COUNTDOWN_SECONDS,
   endGame,
   startGame,
 } from './game.js';
 import { isLocalPlayer } from './player.js';
+import { useServerTimeOffset } from './server-time-offset.js';
 import {
   getMediumWord,
 } from './word-generator.js';
@@ -27,7 +34,6 @@ function GameView() {
     gameState,
     setGameState,
   } = useContext(GameContext);
-
   useEffect(() => {
     if (!gameId) {
       return;
@@ -54,6 +60,30 @@ function GameView() {
       gameRef.off('value', callback);
     };
   }, [gameId]);
+
+  const serverTimeOffset = useServerTimeOffset(db, 0);
+  const [showingCountdown, setShowingCountdown] = useState(false);
+  useEffect(async () => {
+    const estimatedServerTimeMs = Date.now() + serverTimeOffset;
+    const desiredCountdownEndTime =
+      gameState.preStartCountdownStartTime + PRE_START_COUNTDOWN_SECONDS * 1000;
+    if (gameState.state !== 'started' || estimatedServerTimeMs >= desiredCountdownEndTime) {
+      setShowingCountdown(false);
+    }
+    else if (!showingCountdown) {
+      setShowingCountdown(true);
+      try {
+        await preStartCountdown(desiredCountdownEndTime - estimatedServerTimeMs);
+      } catch (error) {
+        if (!(error instanceof CountdownCanceled)) {
+          throw error;
+        }
+        endGame(gameId, gameState);
+      } finally {
+        setShowingCountdown(false);
+      }
+    }
+  }, [gameState, serverTimeOffset, showingCountdown])
 
   function startCurrentGame() {
     startGame(gameId, gameState);
@@ -141,10 +171,9 @@ function GameView() {
       case 'joining':
         return joiningView();
       case 'started':
-        // TODO: Fix so this is possible
-        // if (roundSegment < 0) {
-        //   return '';
-        // }
+        if (showingCountdown) {
+          return '';
+        }
         return startedView();
       default:
         throw new Error('Invalid game state');

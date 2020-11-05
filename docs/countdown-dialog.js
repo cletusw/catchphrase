@@ -6,10 +6,10 @@ import dialogPolyfill from 'dialog-polyfill';
 
 export class CountdownCanceled { }
 
-export async function preStartCountdown(seconds) {
+export async function preStartCountdown(milliseconds) {
   await new Promise((resolve, reject) => {
     let timerId = 0;
-    let currentCount = seconds;
+    let currentCount = Math.ceil(milliseconds / 1000.0);
     const updateCountdown = showCountdownDialog(currentCount, () => {
       clearTimeout(timerId);
       timerId = 0;
@@ -23,7 +23,7 @@ export async function preStartCountdown(seconds) {
       }
       timerId = setTimeout(timerTick, 1000); // TODO: Compute actual value
     };
-    timerId = setTimeout(timerTick, 1000); // TODO: Compute actual value
+    timerId = setTimeout(timerTick, milliseconds % 1000);
   });
 }
 
