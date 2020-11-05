@@ -18,7 +18,16 @@ import {
 } from './game.js';
 
 const PRE_START_COUNTDOWN_SECONDS = 3;
-const ROUND_SEGMENTS = 3;
+const STATIC_ROUND_SEGMENT_DURATIONS_SECONDS = [
+  14,
+  15,
+  17,
+  // random 7-9 for final segment
+];
+
+function computeRoundSegment(gameState) {
+  return 0;
+}
 
 function GameTimer() {
   const {
@@ -27,8 +36,8 @@ function GameTimer() {
   } = useContext(GameContext);
   const [roundSegmentTimerId, setRoundSegmentTimerId] = useState(0);
   const [serverTimeOffset, setServerTimeOffset] = useState(0);
-  // TODO: Find some way to derive this from gameState
-  const [roundSegment, setRoundSegment] = useState(null);
+
+  const roundSegment = computeRoundSegment(gameState);
 
   useEffect(() => {
     const offsetRef = db.ref('.info/serverTimeOffset');
@@ -40,11 +49,9 @@ function GameTimer() {
   async function gameTimers() {
     // If you change this function, make sure to update the useEffect hook watch array below
     if (roundSegment == null) {
-      setRoundSegment(-1);
       try {
         // TODO: Actually compute PRE_START_COUNTDOWN_SECONDS (e.g. in case of page refresh)
         await preStartCountdown(PRE_START_COUNTDOWN_SECONDS);
-        setRoundSegment(0);
       } catch (error) {
         if (!(error instanceof CountdownCanceled)) {
           throw error;
@@ -53,14 +60,19 @@ function GameTimer() {
       }
     }
     else if (roundSegment >= 0 && !roundSegmentTimerId) {
+      if (roundSegment > STATIC_ROUND_SEGMENT_DURATIONS_SECONDS.length) {
+        throw new Error('Invalid roundSegment');
+      }
+
       const estimatedServerTimeMs = Date.now() + serverTimeOffset;
       let roundSegmentTimerEndTimeMs =
         gameState.preStartCountdownStartTime +
         PRE_START_COUNTDOWN_SECONDS * 1000;
-      for (let i = 0; i <= roundSegment; i++) {
-        roundSegmentTimerEndTimeMs += gameState.roundSegmentDurationSeconds * 1000;
+      for (let i = 0; i < roundSegment; i++) {
+        roundSegmentTimerEndTimeMs += STATIC_ROUND_SEGMENT_DURATIONS_SECONDS[i] * 1000;
       }
-      if (roundSegment + 1 === ROUND_SEGMENTS) {
+
+      if (roundSegment === STATIC_ROUND_SEGMENT_DURATIONS_SECONDS.length) {
         // console.log('last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
         setRoundSegmentTimerId(setTimeout(() => {
           // TODO: between rounds instead of ending game
@@ -68,10 +80,10 @@ function GameTimer() {
         }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
       }
       else {
+        // TODO: Remove this branch
         // console.log('not last', roundSegmentTimerEndTimeMs - estimatedServerTimeMs);
         setRoundSegmentTimerId(setTimeout(() => {
           setRoundSegmentTimerId(0);
-          setRoundSegment((roundSegment) => roundSegment + 1);
         }, roundSegmentTimerEndTimeMs - estimatedServerTimeMs));
       }
     }
@@ -80,9 +92,6 @@ function GameTimer() {
   useEffect(() => {
     if (gameState.state === 'started') {
       gameTimers(); // Note: This is asynchronous
-    }
-    else if (roundSegment) {
-      setRoundSegment(null);
     }
 
     return function stopEffect() {
