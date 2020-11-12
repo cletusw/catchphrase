@@ -191,34 +191,6 @@ const styles = html`
     :host {
       display: block;
     }
-    @keyframes toggle-opacity {
-      0% {
-        opacity: 0;
-      }
-      35% {
-        opacity: 0;
-      }
-      35.001% {
-        opacity: 1;
-      }
-    }
-    .timer {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
-    .timer.round-segment-0 {
-      animation: toggle-opacity 0.6s infinite;
-      background-color: hsl(120 100% 48%);
-    }
-    .timer.round-segment-1 {
-      animation: toggle-opacity 0.4s infinite;
-      background-color: hsl(60 100% 48%);
-    }
-    .timer.round-segment-2 {
-      animation: toggle-opacity 0.2s infinite;
-      background-color: hsl(0 100% 48%);
-    }
     .the-word {
       font-size: 2rem;
       padding: 3rem 1rem;
