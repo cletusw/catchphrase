@@ -15,6 +15,7 @@ import './game-view.js';
 import './header.js';
 import './link.js';
 import './player-list.js';
+import './scorecard.js';
 
 customElements.define('catchphrase-game-provider', GameContext.Provider);
 
@@ -73,6 +74,7 @@ function App() {
       <catchphrase-header></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
+      <catchphrase-scorecard class="scorecard"></catchphrase-scorecard>
       <div class="game-header">
         <catchphrase-player-list class="player-list"></catchphrase-player-list>
         <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
@@ -96,6 +98,7 @@ const styles = html`
     }
     .alert-error,
     .link,
+    .scorecard,
     .player-list,
     .game-timer,
     .game-view {

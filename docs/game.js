@@ -13,6 +13,7 @@ export const GameContext = createContext({
   gameState: {
     state: '',
     players: [],
+    // TODO: Need to specify everything here?
   },
   setGameState: () => { },
 });
@@ -110,5 +111,7 @@ export function startGame(gameId, gameState) {
         (key) => gameState.players[key].order),
       currentWordUnboundedIndex: 0,
       wordListShuffleSeed: _.random(0, Number.MAX_SAFE_INTEGER),
+      team1Score: 0,
+      team2Score: 0,
     });
 }
