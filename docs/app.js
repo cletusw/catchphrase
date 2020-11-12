@@ -73,8 +73,10 @@ function App() {
       <catchphrase-header></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
-      <catchphrase-player-list class="player-list"></catchphrase-player-list>
-      <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
+      <div class="game-header">
+        <catchphrase-player-list class="player-list"></catchphrase-player-list>
+        <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
+      </div>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
     </catchphrase-game-provider>
   `;
@@ -101,6 +103,12 @@ const styles = html`
     }
     .wrapper:not(.state-joining) .link {
       display: none;
+    }
+    .game-header {
+      display: flex;
+    }
+    .player-list {
+      flex: 1;
     }
     .wrapper:not(.state-started) .game-timer {
       display: none;
