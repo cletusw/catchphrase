@@ -71,7 +71,7 @@ const styles = html`
       text-align: center;
     }
     button {
-      margin-top: 8px;
+      margin-top: 0.5rem;
     }
   </style>
 `;

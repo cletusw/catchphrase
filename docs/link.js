@@ -38,6 +38,7 @@ function Link() {
       <div>
         <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>
         <button
+            aria-label="Copy join game link"
             class="copy-button"
             @click=${handleCopyButtonClick}>
           Copy
@@ -65,7 +66,7 @@ const styles = html`
       display: block;
     }
     .copy-button {
-      margin-left: 4px;
+      margin-left: 0.25rem;
     }
   </style>
 `;

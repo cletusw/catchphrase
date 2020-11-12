@@ -154,12 +154,12 @@ const styles = html`
       display: block;
     }
     .add-local-player-button {
-      margin-top: 8px;
+      margin-top: 0.5rem;
     }
     ol {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 0.5rem;
       list-style-type: none;
       margin-top: 1rem;
       margin-bottom: 0;
@@ -168,7 +168,7 @@ const styles = html`
     li {
       background: hsl(200, 100%, 80%);
       display: flex;
-      padding: 8px;
+      padding: 0.5rem;
       user-select: none;
     }
     [is="catchphrase-sortable-list"] li {
@@ -204,7 +204,7 @@ const styles = html`
       position: absolute;
     }
     .next-player {
-      margin-top: 4px;
+      margin-top: 0.25rem;
       opacity: 0.6;
     }
   </style>

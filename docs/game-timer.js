@@ -100,8 +100,8 @@ const styles = html`
       }
     }
     .timer {
-      width: 24px;
-      height: 24px;
+      width: 1.5rem;
+      height: 1.5rem;
       border-radius: 50%;
     }
     .timer.round-segment-0 {

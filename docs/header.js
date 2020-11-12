@@ -59,8 +59,8 @@ const styles = html`
     header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      height: 48px;
+      gap: 0.5rem;
+      height: 3rem;
     }
     h1 {
       margin-top: 0;

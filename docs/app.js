@@ -80,12 +80,11 @@ function App() {
   `;
 }
 
-// TODO: Convert all px to rem
 const styles = html`
   <style>
     :host {
       display: block;
-      padding: 16px;
+      padding: 1rem;
     }
     .alert-error {
       background-color: hsl(50 100% 90%);

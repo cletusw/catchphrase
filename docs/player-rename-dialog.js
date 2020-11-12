@@ -10,7 +10,7 @@ export function showPlayerRenameDialog({ name, setName }) {
     ${styles}
     <form method="dialog">
       <label>
-        Player name:
+        <div>Player name:</div>
         <input
             type="text"
             name="playerName"
@@ -55,8 +55,14 @@ export function showPlayerRenameDialog({ name, setName }) {
 
 const styles = html`
   <style>
+    input {
+      margin-top: 0.25rem;
+    }
     .buttons {
-      margin-top: 8px;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
     }
   </style>
 `;
