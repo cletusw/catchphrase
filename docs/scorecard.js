@@ -4,12 +4,16 @@ import {
   useContext,
 } from 'haunted';
 
+import { db } from './db.js';
 import {
   GameContext,
 } from './game.js';
 
 function Scorecard() {
-  const { gameState } = useContext(GameContext);
+  const {
+    gameId,
+    gameState,
+  } = useContext(GameContext);
 
   const started = gameState.state === 'started';
 
@@ -18,12 +22,39 @@ function Scorecard() {
     throw new Error('GameState invalid: missing team scores')
   }
 
+  function setTeam1Score(newScore) {
+    if (newScore == null || newScore < 0) {
+      throw new Error('Attempted to set invalid score');
+    }
+    db.ref('games')
+      .child(gameId)
+      .update({
+        team1Score: newScore,
+      });
+  }
+
+  function setTeam2Score(newScore) {
+    if (newScore == null || newScore < 0) {
+      throw new Error('Attempted to set invalid score');
+    }
+    db.ref('games')
+      .child(gameId)
+      .update({
+        team2Score: newScore,
+      });
+  }
+
   return html`
     ${styles}
     <div
-        class="container">
-      <button class="inc player-one">+</button>
-      <button class="dec player-one">–</button>
+        class="container"
+        ?hidden=${!started}>
+      <button
+          class="inc player-one"
+          @click=${() => setTeam1Score(gameState.team1Score + 1)}>+</button>
+      <button
+          class="dec player-one"
+          @click=${() => setTeam1Score(gameState.team1Score - 1)}>–</button>
       <div class="name player-one">
         Team 1
       </div>
@@ -41,8 +72,12 @@ function Scorecard() {
       <div class="score player-two">
         ${gameState.team2Score}
       </div>
-      <button class="inc player-two">+</button>
-      <button class="dec player-two">–</button>
+      <button
+          class="inc player-two"
+          @click=${() => setTeam2Score(gameState.team2Score + 1)}>+</button>
+      <button
+          class="dec player-two"
+          @click=${() => setTeam2Score(gameState.team2Score - 1)}>–</button>
     </div>
   `;
 }
