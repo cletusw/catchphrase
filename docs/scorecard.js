@@ -8,6 +8,7 @@ import { db } from './db.js';
 import {
   GameContext,
 } from './game.js';
+import { isLocalPlayer } from './player.js';
 
 function Scorecard() {
   const {
@@ -16,6 +17,7 @@ function Scorecard() {
   } = useContext(GameContext);
 
   const started = gameState.state === 'started';
+  const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
 
   if (started &&
       (gameState.team1Score == null || gameState.team2Score == null)) {
@@ -47,7 +49,7 @@ function Scorecard() {
   return html`
     ${styles}
     <div
-        class="container"
+        class="container${currentPlayerIsLocal ? ' current-player-is-local' : ''}"
         ?hidden=${!started}>
       <button
           class="inc player-one"
@@ -102,6 +104,10 @@ const styles = html`
       place-items: center;
       column-gap: 1rem;
       row-gap: 0.1rem;
+    }
+    .container:not(.current-player-is-local) .inc,
+    .container:not(.current-player-is-local) .dec {
+      display: none;
     }
     .inc.player-one {
       grid-area: one-inc;
