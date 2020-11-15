@@ -52,15 +52,15 @@ function Scorecard() {
         class="container${currentPlayerIsLocal ? ' current-player-is-local' : ''}"
         ?hidden=${!started}>
       <button
-          class="inc player-one"
+          class="inc team-one"
           @click=${() => setTeam1Score(gameState.team1Score + 1)}>+</button>
       <button
-          class="dec player-one"
+          class="dec team-one"
           @click=${() => setTeam1Score(gameState.team1Score - 1)}>–</button>
-      <div class="name player-one">
+      <div class="name team-one">
         Team 1
       </div>
-      <div class="score player-one">
+      <div class="score team-one">
         ${gameState.team1Score}
       </div>
       <div
@@ -68,17 +68,17 @@ function Scorecard() {
           class="divider">
         —
       </div>
-      <div class="name player-two">
+      <div class="name team-two">
         Team 2
       </div>
-      <div class="score player-two">
+      <div class="score team-two">
         ${gameState.team2Score}
       </div>
       <button
-          class="inc player-two"
+          class="inc team-two"
           @click=${() => setTeam2Score(gameState.team2Score + 1)}>+</button>
       <button
-          class="dec player-two"
+          class="dec team-two"
           @click=${() => setTeam2Score(gameState.team2Score - 1)}>–</button>
     </div>
   `;
@@ -109,35 +109,35 @@ const styles = html`
     .container:not(.current-player-is-local) .dec {
       display: none;
     }
-    .inc.player-one {
+    .inc.team-one {
       grid-area: one-inc;
     }
-    .inc.player-two {
+    .inc.team-two {
       grid-area: two-inc;
     }
-    .dec.player-one {
+    .dec.team-one {
       grid-area: one-dec;
     }
-    .dec.player-two {
+    .dec.team-two {
       grid-area: two-dec;
     }
     .name {
       font-size: 0.75rem;
     }
-    .name.player-one {
+    .name.team-one {
       grid-area: one-name;
     }
-    .name.player-two {
+    .name.team-two {
       grid-area: two-name;
     }
     .score {
       font-size: 1.75rem;
       line-height: 1;
     }
-    .score.player-one {
+    .score.team-one {
       grid-area: one-score;
     }
-    .score.player-two {
+    .score.team-two {
       grid-area: two-score;
     }
     .divider {
