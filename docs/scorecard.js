@@ -56,6 +56,7 @@ function Scorecard() {
           @click=${() => setTeam1Score(gameState.team1Score + 1)}>+</button>
       <button
           class="dec team-one"
+          ?disabled=${gameState.team1Score <= 0}
           @click=${() => setTeam1Score(gameState.team1Score - 1)}>–</button>
       <div class="name team-one">
         Team 1
@@ -79,6 +80,7 @@ function Scorecard() {
           @click=${() => setTeam2Score(gameState.team2Score + 1)}>+</button>
       <button
           class="dec team-two"
+          ?disabled=${gameState.team2Score <= 0}
           @click=${() => setTeam2Score(gameState.team2Score - 1)}>–</button>
     </div>
   `;

@@ -19,6 +19,8 @@ export const GameContext = createContext({
 });
 
 export const PRE_START_COUNTDOWN_SECONDS = 3;
+const ROUND_SEGMENTS = 3;
+export const LAST_ROUND_SEGMENT = ROUND_SEGMENTS - 1; // because roundSegment is 0-based
 
 const GAMEID_LENGTH = 9;
 // Lots of letters removed for decreased ambiguity
@@ -114,4 +116,32 @@ export function startGame(gameId, gameState) {
       team1Score: 0,
       team2Score: 0,
     });
+}
+
+export function startNextRound(gameId) {
+  if (!gameId) {
+    throw new Error('Game ID missing');
+  }
+
+  games
+    .child(gameId)
+    .update({
+      preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
+      // TODO: Make random & different each segment
+      roundSegmentDurationSeconds: 3,
+    });
+}
+
+export function getRoundSegmentEndTime(roundSegment, gameState) {
+  let roundSegmentEndTimeMs =
+    gameState.preStartCountdownStartTime +
+    PRE_START_COUNTDOWN_SECONDS * 1000;
+  for (let i = 0; i <= roundSegment; i++) {
+    roundSegmentEndTimeMs += gameState.roundSegmentDurationSeconds * 1000;
+  }
+  return roundSegmentEndTimeMs;
+}
+
+export function getRoundOverallEndTime(gameState) {
+  return getRoundSegmentEndTime(LAST_ROUND_SEGMENT, gameState);
 }

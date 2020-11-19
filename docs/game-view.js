@@ -16,9 +16,14 @@ import {
   GameContext,
   PRE_START_COUNTDOWN_SECONDS,
   endGame,
+  getRoundOverallEndTime,
   startGame,
+  startNextRound,
 } from './game.js';
 import { isLocalPlayer } from './player.js';
+import {
+  useRoundSegment,
+} from './round-segment.js';
 import { useServerTimeOffset } from './server-time-offset.js';
 import {
   getMediumWord,
@@ -27,6 +32,8 @@ import {
 const MINIMUM_PLAYERS_REQUIRED = 2; // TODO: 4 after implementing teams
 
 const games = db.ref('games');
+
+let inCountdown = false;
 
 function GameView() {
   const {
@@ -61,29 +68,30 @@ function GameView() {
     };
   }, [gameId]);
 
+  const roundSegment = useRoundSegment(gameState);
   const serverTimeOffset = useServerTimeOffset(db, 0);
-  const [showingCountdown, setShowingCountdown] = useState(false);
+  const estimatedServerTimeMs = Date.now() + serverTimeOffset;
+  const roundDone = estimatedServerTimeMs >= getRoundOverallEndTime(gameState);
   useEffect(async () => {
-    const estimatedServerTimeMs = Date.now() + serverTimeOffset;
-    const desiredCountdownEndTime =
-      gameState.preStartCountdownStartTime + PRE_START_COUNTDOWN_SECONDS * 1000;
-    if (gameState.state !== 'started' || estimatedServerTimeMs >= desiredCountdownEndTime) {
-      setShowingCountdown(false);
-    }
-    else if (!showingCountdown) {
-      setShowingCountdown(true);
+    if (roundSegment === -1 && !inCountdown) {
+      inCountdown = true;
+      const desiredCountdownEndTime =
+        gameState.preStartCountdownStartTime + PRE_START_COUNTDOWN_SECONDS * 1000;
       try {
+        // TODO: Shows NaN if cancelled for some reason
+        // TODO: Not showing after End game then Start game
         await preStartCountdown(desiredCountdownEndTime - estimatedServerTimeMs);
       } catch (error) {
         if (!(error instanceof CountdownCanceled)) {
           throw error;
         }
+        // TODO: Go to between rounds if game's already in progress
         endGame(gameId, gameState);
       } finally {
-        setShowingCountdown(false);
+        inCountdown = false;
       }
     }
-  }, [gameState, serverTimeOffset, showingCountdown])
+  }, [gameState, serverTimeOffset, roundSegment])
 
   function startCurrentGame() {
     startGame(gameId, gameState);
@@ -160,6 +168,17 @@ function GameView() {
     `;
   }
 
+  function betweenRoundsView() {
+    return html`
+      <button @click=${() => startNextRound(gameId)}>
+        Start next round
+      </button>
+      <button @click=${endCurrentGame}>
+        End game
+      </button>
+    `;
+  }
+
   function body() {
     if (!gameId) {
       return '';
@@ -171,8 +190,11 @@ function GameView() {
       case 'joining':
         return joiningView();
       case 'started':
-        if (showingCountdown) {
+        if (roundSegment === -1) {
           return '';
+        }
+        if (roundDone) {
+          return betweenRoundsView();
         }
         return startedView();
       default:
