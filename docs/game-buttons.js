@@ -109,36 +109,42 @@ function GameButtons() {
           ${MINIMUM_PLAYERS_REQUIRED}+ players required
         </div>
       `}
-      <button
-          ?disabled=${!minimumPlayersRequirementMet}
-          @click=${startCurrentGame}>
-        Start game
-      </button>
+      <div class="buttons">
+        <button
+            ?disabled=${!minimumPlayersRequirementMet}
+            @click=${startCurrentGame}>
+          Start game
+        </button>
+      </div>
     `;
   }
 
   function startedView() {
     return html`
-      <button @click=${nextPlayer}>
-        Got it
-      </button>
-      <button @click=${nextWord}>
-        Skip
-      </button>
-      <button @click=${endCurrentGame}>
-        End game
-      </button>
+      <div class="buttons">
+        <button @click=${nextPlayer}>
+          Got it
+        </button>
+        <button @click=${nextWord}>
+          Skip
+        </button>
+        <button @click=${endCurrentGame}>
+          End game
+        </button>
+      </div>
     `;
   }
 
   function betweenRoundsView() {
     return html`
-      <button @click=${() => startNextRound(gameId)}>
-        Start next round
-      </button>
-      <button @click=${endCurrentGame}>
-        End game
-      </button>
+      <div class="buttons">
+        <button @click=${() => startNextRound(gameId)}>
+          Start next round
+        </button>
+        <button @click=${endCurrentGame}>
+          End game
+        </button>
+      </div>
     `;
   }
 
@@ -169,9 +175,7 @@ function GameButtons() {
 
   return html`
     ${styles}
-    <div class="buttons">
-      ${body()}
-    </div>
+    ${body()}
   `;
 }
 
@@ -180,11 +184,15 @@ const styles = html`
     :host {
       display: block;
     }
+    .min-players-notification {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
     .buttons {
       display: grid;
       grid-auto-flow: column;
+      grid-auto-columns: 1fr;
       gap: 1rem;
-      place-items: center;
     }
   </style>
 `;
