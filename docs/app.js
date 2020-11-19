@@ -5,11 +5,13 @@ import {
   useState,
 } from 'haunted';
 
+import { db } from './db.js';
 import {
   GameContext,
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
+import './game-buttons.js';
 import './game-timer.js';
 import './game-view.js';
 import './header.js';
@@ -57,6 +59,32 @@ function App() {
     }
   }, [gameId]);
 
+  useEffect(() => {
+    if (!gameId) {
+      return;
+    }
+
+    const gameRef = db.ref('games').child(gameId);
+
+    const callback = gameRef.on('value', (snapshot) => {
+      const gameState = snapshot.val();
+
+      if (!gameState) {
+        gameRef.set({
+          state: 'joining',
+        });
+        return;
+      }
+
+      // console.log('updating local game state', gameState);
+      setGameState(gameState);
+    });
+
+    return function stopEffect() {
+      gameRef.off('value', callback);
+    };
+  }, [gameId]);
+
   function errorView() {
     // TODO: Use a toast instead
     return error ? html`
@@ -80,6 +108,7 @@ function App() {
         <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
       </div>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
+      <catchphrase-game-buttons class="game-buttons"></catchphrase-game-buttons>
     </catchphrase-game-provider>
   `;
 }
@@ -120,7 +149,11 @@ const styles = html`
       display: none;
     }
     .game-view {
+      align-self: stretch;
       flex: 1;
+    }
+    .game-buttons {
+      align-self: stretch;
     }
   </style>
 `;
