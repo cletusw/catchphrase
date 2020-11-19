@@ -19,6 +19,8 @@ import {
   getMediumWord,
 } from './word-generator.js';
 
+import './game-timer.js';
+
 function GameView() {
   const {
     gameId,
@@ -33,6 +35,7 @@ function GameView() {
   function startedView() {
     const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
     return html`
+      <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
       <div class="the-word${currentPlayerIsLocal ? ' current-player-is-local' : ''}">
         ${currentPlayerIsLocal ? getMediumWord(gameState.currentWordUnboundedIndex, gameState.wordListShuffleSeed) : ''}
       </div>
@@ -58,6 +61,12 @@ const styles = html`
     :host {
       display: grid;
       place-items: center;
+      position: relative;
+    }
+    .game-timer {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
     .the-word {
       font-size: 2rem;

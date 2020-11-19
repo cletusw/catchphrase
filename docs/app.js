@@ -11,8 +11,8 @@ import {
   createGame,
   extractGameIdFromUrl,
 } from './game.js';
+
 import './game-buttons.js';
-import './game-timer.js';
 import './game-view.js';
 import './header.js';
 import './link.js';
@@ -103,10 +103,7 @@ function App() {
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-scorecard class="scorecard"></catchphrase-scorecard>
-      <div class="game-header">
-        <catchphrase-player-list class="player-list"></catchphrase-player-list>
-        <catchphrase-game-timer class="game-timer"></catchphrase-game-timer>
-      </div>
+      <catchphrase-player-list class="player-list"></catchphrase-player-list>
       <catchphrase-game-view class="game-view"></catchphrase-game-view>
       <catchphrase-game-buttons class="game-buttons"></catchphrase-game-buttons>
     </catchphrase-game-provider>
@@ -137,15 +134,6 @@ const styles = html`
       padding: .75rem 1.25rem;
     }
     .wrapper:not(.state-joining) .link {
-      display: none;
-    }
-    .game-header {
-      display: flex;
-    }
-    .player-list {
-      flex: 1;
-    }
-    .wrapper:not(.state-started) .game-timer {
       display: none;
     }
     .game-view {
