@@ -40,8 +40,15 @@ body.dragging {
 }
 
 catchphrase-app {
-  margin: 0 auto;
-  max-width: 720px;
+  height: 100vh;
+}
+
+@media (min-width: 720px) {
+  catchphrase-app {
+    margin: 0 auto;
+    max-height: 800px;
+    max-width: 690px;
+  }
 }
 
 /**

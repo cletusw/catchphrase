@@ -71,7 +71,7 @@ function App() {
     <catchphrase-game-provider
         class="wrapper state-${gameState.state}"
         .value=${gameContext}>
-      <catchphrase-header></catchphrase-header>
+      <catchphrase-header class="header"></catchphrase-header>
       ${errorView()}
       <catchphrase-link class="link"></catchphrase-link>
       <catchphrase-scorecard class="scorecard"></catchphrase-scorecard>
@@ -87,22 +87,25 @@ function App() {
 const styles = html`
   <style>
     :host {
+      box-sizing: border-box;
       display: block;
       padding: 1rem;
+    }
+    .wrapper {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      place-items: center;
+    }
+    .header {
+      align-self: stretch;
     }
     .alert-error {
       background-color: hsl(50 100% 90%);
       border: 1px solid hsl(50 100% 85%);
       border-radius: .25rem;
       padding: .75rem 1.25rem;
-    }
-    .alert-error,
-    .link,
-    .scorecard,
-    .player-list,
-    .game-timer,
-    .game-view {
-      margin-top: 1rem;
     }
     .wrapper:not(.state-joining) .link {
       display: none;
@@ -115,6 +118,9 @@ const styles = html`
     }
     .wrapper:not(.state-started) .game-timer {
       display: none;
+    }
+    .game-view {
+      flex: 1;
     }
   </style>
 `;

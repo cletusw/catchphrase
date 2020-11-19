@@ -168,6 +168,7 @@ const styles = html`
     li {
       background: hsl(200, 100%, 80%);
       display: flex;
+      gap: 1rem;
       padding: 0.5rem;
       user-select: none;
     }
@@ -190,7 +191,7 @@ const styles = html`
     .local-player .name::after {
       content: '(local)';
       font-size: 0.7rem;
-      margin-left: 0.5rem;
+      margin-left: 0.25rem;
       vertical-align: middle;
     }
     .current-player,
