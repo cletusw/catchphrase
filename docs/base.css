@@ -4,6 +4,7 @@ body {
   padding: 0;
 }
 
+/* TODO: Account for mobile browser URL bar so users don't have to scroll the page */
 body {
   box-sizing: border-box;
   min-height: 100vh;
