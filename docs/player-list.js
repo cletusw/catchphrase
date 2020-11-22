@@ -166,6 +166,7 @@ const styles = html`
       margin-top: 1rem;
       margin-bottom: 0;
       padding: 0;
+      width: 400px;
     }
     li {
       background: hsl(200, 100%, 80%);
@@ -189,16 +190,19 @@ const styles = html`
     }
     .name {
       flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .local-player .name::after {
       content: '(local)';
       font-size: 0.7rem;
-      margin-left: 0.25rem;
-      vertical-align: middle;
+      margin-left: 0.5rem;
+      vertical-align: 1px;
     }
     .current-player,
     .next-player {
-      padding: 0 0 0 1.33333rem;
+      padding: 0 0 0 1.5rem;
       position: relative;
     }
     .current-player::before {
