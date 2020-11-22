@@ -7,11 +7,17 @@ import {
 
 import {
   GameContext,
+  endGame,
 } from './game.js';
 import './join.js';
 
 function Header() {
-  const { setGameId, setGameState } = useContext(GameContext);
+  const {
+    gameId,
+    setGameId,
+    gameState,
+    setGameState,
+  } = useContext(GameContext);
   const [isJoining, setIsJoining] = useState(false);
 
   function newGameClicked() {
@@ -32,6 +38,11 @@ function Header() {
         ⇦
       </button>
       <h1>Catch Phrase</h1>
+      <button
+          @click=${() => endGame(gameId, gameState)}
+          ?hidden=${!gameState || gameState.state !== 'started'}>
+        End game
+      </button>
       <button
           class="new-game-button"
           aria-label="New game"

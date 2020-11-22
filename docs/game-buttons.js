@@ -67,10 +67,6 @@ function GameButtons() {
     startGame(gameId, gameState);
   }
 
-  function endCurrentGame() {
-    endGame(gameId, gameState);
-  }
-
   function nextPlayer() {
     const orderedPlayers = _
       .chain(gameState.players)
@@ -129,9 +125,6 @@ function GameButtons() {
         <button @click=${nextWord}>
           Skip
         </button>
-        <button @click=${endCurrentGame}>
-          End game
-        </button>
       </div>
     `;
   }
@@ -141,9 +134,6 @@ function GameButtons() {
       <div class="buttons">
         <button @click=${() => startNextRound(gameId)}>
           Start next round
-        </button>
-        <button @click=${endCurrentGame}>
-          End game
         </button>
       </div>
     `;

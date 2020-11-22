@@ -104,6 +104,7 @@ export function startGame(gameId, gameState) {
   games
     .child(gameId)
     .update({
+      // TODO: Remove `state` in favor of just the presence of preStartCountdownStartTime
       state: 'started',
       preStartCountdownStartTime: firebase.database.ServerValue.TIMESTAMP,
       // TODO: Make random & different each segment
