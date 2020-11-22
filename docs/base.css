@@ -26,7 +26,6 @@ body {
       "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.5;
 }
 
 /* Clearfix to prevent margin collapsing due to child elements, which would mess up the min-height: 100vh above */
@@ -44,12 +43,15 @@ catchphrase-app {
   height: 100%;
   margin: 0 auto;
   max-height: 50rem;
-  max-width: 700px;
+  max-width: 600px;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 768px) {
   html {
     font-size: 20px;
+  }
+  catchphrase-app {
+    max-width: 720px;
   }
 }
 

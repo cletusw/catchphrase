@@ -74,9 +74,9 @@ const styles = html`
       padding-bottom: 0.5rem;
     }
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       margin-top: 0;
-      margin-bottom: -0.5rem;
+      margin-bottom: 0;
       margin-right: auto;
     }
     .long-text {
@@ -97,6 +97,9 @@ const styles = html`
       display: unset;
     }
     @media (min-width: 576px) {
+      h1 {
+        font-size: 1.5rem;
+      }
       .long-text {
         display: unset;
       }

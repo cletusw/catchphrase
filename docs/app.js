@@ -139,12 +139,13 @@ const styles = html`
     .wrapper:not(.state-started) .scorecard {
       display: none;
     }
+    .wrapper:not(.state-started) .player-list {
+      width: 100%;
+      max-width: 400px;
+    }
     .game-view {
       align-self: stretch;
       flex: 1;
-    }
-    .game-buttons {
-      align-self: stretch;
     }
   </style>
 `;

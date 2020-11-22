@@ -101,24 +101,22 @@ function GameButtons() {
       gameState.players &&
       Object.keys(gameState.players).length >= MINIMUM_PLAYERS_REQUIRED;
     return html`
-      ${minimumPlayersRequirementMet ? '' : html`
-        <div class="min-players-notification">
-          ${MINIMUM_PLAYERS_REQUIRED}+ players required
-        </div>
-      `}
-      <div class="buttons">
+      <div class="container">
         <button
             ?disabled=${!minimumPlayersRequirementMet}
             @click=${startCurrentGame}>
           Start game
         </button>
+        <div ?hidden=${minimumPlayersRequirementMet}>
+          ${MINIMUM_PLAYERS_REQUIRED}+ players required
+        </div>
       </div>
     `;
   }
 
   function startedView() {
     return html`
-      <div class="buttons">
+      <div class="container">
         <button @click=${nextPlayer}>
           Got it
         </button>
@@ -131,7 +129,7 @@ function GameButtons() {
 
   function betweenRoundsView() {
     return html`
-      <div class="buttons">
+      <div class="container">
         <button @click=${() => startNextRound(gameId)}>
           Start next round
         </button>
@@ -175,14 +173,10 @@ const styles = html`
     :host {
       display: block;
     }
-    .min-players-notification {
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-    .buttons {
+    .container {
       display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: 1fr;
+      grid-template-rows: 6rem 2rem;
+      place-items: center;
       gap: 1rem;
     }
   </style>
