@@ -136,6 +136,9 @@ const styles = html`
     .wrapper:not(.state-joining) .link {
       display: none;
     }
+    .wrapper:not(.state-started) .scorecard {
+      display: none;
+    }
     .game-view {
       align-self: stretch;
       flex: 1;

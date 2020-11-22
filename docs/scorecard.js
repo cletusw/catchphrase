@@ -16,10 +16,9 @@ function Scorecard() {
     gameState,
   } = useContext(GameContext);
 
-  const started = gameState.state === 'started';
   const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
 
-  if (started &&
+  if (gameState.state === 'started' &&
       (gameState.team1Score == null || gameState.team2Score == null)) {
     throw new Error('GameState invalid: missing team scores')
   }
@@ -49,8 +48,7 @@ function Scorecard() {
   return html`
     ${styles}
     <div
-        class="container${currentPlayerIsLocal ? ' current-player-is-local' : ''}"
-        ?hidden=${!started}>
+        class="container${currentPlayerIsLocal ? ' current-player-is-local' : ''}">
       <button
           class="inc team-one"
           @click=${() => setTeam1Score(gameState.team1Score + 1)}>+</button>
@@ -90,10 +88,6 @@ const styles = html`
   <style>
     :host {
       display: block;
-    }
-    [hidden][hidden] {
-      /* Otherwise overriden by explicit display property */
-      display: none !important;
     }
     .container {
       display: grid;

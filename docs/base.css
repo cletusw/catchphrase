@@ -1,5 +1,6 @@
 html,
 body {
+  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -7,7 +8,6 @@ body {
 /* TODO: Account for mobile browser URL bar so users don't have to scroll the page */
 body {
   box-sizing: border-box;
-  min-height: 100vh;
 
   /**
    * @see https://getbootstrap.com/docs/4.1/content/reboot
@@ -41,14 +41,15 @@ body.dragging {
 }
 
 catchphrase-app {
-  height: 100vh;
+  height: 100%;
+  margin: 0 auto;
+  max-height: 50rem;
+  max-width: 700px;
 }
 
 @media (min-width: 720px) {
-  catchphrase-app {
-    margin: 0 auto;
-    max-height: 800px;
-    max-width: 690px;
+  html {
+    font-size: 20px;
   }
 }
 

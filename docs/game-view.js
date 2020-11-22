@@ -69,7 +69,8 @@ const styles = html`
       right: 0;
     }
     .the-word {
-      font-size: 2rem;
+      font-size: 3rem;
+      text-align: center;
     }
     .the-word:not(.current-player-is-local) {
       display: none;

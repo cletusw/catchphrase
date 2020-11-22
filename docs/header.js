@@ -58,13 +58,14 @@ const styles = html`
     }
     header {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 0.5rem;
-      height: 3rem;
+      padding-bottom: 0.5rem;
     }
     h1 {
+      font-size: 1.5rem;
       margin-top: 0;
-      margin-bottom: 0;
+      margin-bottom: -0.5rem;
       margin-right: auto;
     }
     .long-text {

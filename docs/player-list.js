@@ -78,6 +78,7 @@ function PlayerList() {
 
   function removePlayer(event) {
     const playerIdToRemove = event.target.closest('[data-id]').dataset.id;
+    // console.log('Removing player ' + gameState.players[playerIdToRemove].name, playerIdToRemove);
     db.ref('games')
       .child(gameId)
       .child('players')
@@ -93,6 +94,7 @@ function PlayerList() {
           @click=${handleAddLocalPlayerButtonClick}>
         Add local player
       </button>
+      <!-- TODO: Reimplement outside lit-html due to https://stackoverflow.com/q/59729790/1431146 -->
       <ol
           is="catchphrase-sortable-list"
           @sort=${handleSort}>

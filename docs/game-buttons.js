@@ -42,6 +42,7 @@ function GameButtons() {
   const estimatedServerTimeMs = Date.now() + serverTimeOffset;
   const roundDone = estimatedServerTimeMs >= getRoundOverallEndTime(gameState);
   useEffect(async () => {
+    // TODO: Fix showing after refresh when it should be hidden already
     if (roundSegment === -1 && !inCountdown) {
       inCountdown = true;
       const desiredCountdownEndTime =
