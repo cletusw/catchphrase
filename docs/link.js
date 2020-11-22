@@ -24,6 +24,13 @@ function Link() {
     });
   }
 
+  function handleShareButtonClick() {
+    navigator.share({
+      title: 'Join my Catch Phrase game!',
+      url: urlWithoutProtocol,
+    });
+  }
+
   function noDataView() {
     return html`
       <div>
@@ -32,18 +39,24 @@ function Link() {
     `;
   }
 
-  function gameReadyView() {
+  function copyButton() {
     return html`
-      <div>Share this link:</div>
-      <div>
-        <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>
-        <button
-            aria-label="Copy join game link"
-            class="copy-button"
-            @click=${handleCopyButtonClick}>
-          Copy
-        </button>
-      </div>`;
+      <button
+          aria-label="Copy join game link"
+          @click=${handleCopyButtonClick}>
+        Copy join game link
+      </button>
+    `;
+  }
+
+  function shareButton() {
+    return html`
+      <button
+          aria-label="Share join game link"
+          @click=${handleShareButtonClick}>
+        Share join game link
+      </button>
+    `;
   }
 
   function body() {
@@ -51,7 +64,12 @@ function Link() {
       // TODO show nothing until 250ms in case data comes back quickly
       return noDataView();
     }
-    return gameReadyView();
+    return html`
+      <div class="container">
+        <a href="${urlWithoutProtocol}">${urlWithoutProtocol}</a>
+        ${navigator.share ? shareButton() : copyButton()}
+      </div>
+    `;
   }
 
   return html`
@@ -65,8 +83,11 @@ const styles = html`
     :host {
       display: block;
     }
-    .copy-button {
-      margin-left: 0.25rem;
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
     }
   </style>
 `;
