@@ -167,6 +167,7 @@ const styles = html`
       margin-bottom: 0;
       padding: 0;
       width: 400px;
+      max-width: 100%;
     }
     li {
       background: hsl(200, 100%, 80%);

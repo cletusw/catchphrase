@@ -189,6 +189,7 @@ const styles = html`
       display: grid;
       grid-template-rows: 48px 48px;
       gap: 64px;
+      text-align: center;
       width: 100%;
     }
     .secondary-buttons {
