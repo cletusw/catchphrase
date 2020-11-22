@@ -63,10 +63,6 @@ function GameButtons() {
     }
   }, [gameState, serverTimeOffset, roundSegment])
 
-  function startCurrentGame() {
-    startGame(gameId, gameState);
-  }
-
   function nextPlayer() {
     const orderedPlayers = _
       .chain(gameState.players)
@@ -96,6 +92,14 @@ function GameButtons() {
       });
   }
 
+  function endRound() {
+    games
+      .child(gameId)
+      .update({
+        preStartCountdownStartTime: 0,
+      });
+  }
+
   function joiningView() {
     const minimumPlayersRequirementMet =
       gameState.players &&
@@ -104,7 +108,7 @@ function GameButtons() {
       <div class="container">
         <button
             ?disabled=${!minimumPlayersRequirementMet}
-            @click=${startCurrentGame}>
+            @click=${() => startGame(gameId, gameState)}>
           Start game
         </button>
         <div ?hidden=${minimumPlayersRequirementMet}>
@@ -120,9 +124,14 @@ function GameButtons() {
         <button @click=${nextPlayer}>
           Got it
         </button>
-        <button @click=${nextWord}>
-          Skip
-        </button>
+        <div class="secondary-buttons">
+          <button @click=${endRound}>
+            Pause
+          </button>
+          <button @click=${nextWord}>
+            Skip
+          </button>
+        </div>
       </div>
     `;
   }
@@ -132,6 +141,9 @@ function GameButtons() {
       <div class="container">
         <button @click=${() => startNextRound(gameId)}>
           Start next round
+        </button>
+        <button @click=${() => endGame(gameId, gameState)}>
+          End game
         </button>
       </div>
     `;
@@ -175,9 +187,15 @@ const styles = html`
     }
     .container {
       display: grid;
-      grid-template-rows: 6rem 2rem;
-      place-items: center;
-      gap: 1rem;
+      grid-template-rows: 48px 48px;
+      gap: 64px;
+      width: 100%;
+    }
+    .secondary-buttons {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: 2rem;
     }
   </style>
 `;

@@ -17,6 +17,7 @@ function GameTimer() {
   } = useContext(GameContext);
   const roundSegment = useRoundSegment(gameState);
 
+  // TODO: Add sound?
   return html`
     ${styles}
     ${roundSegment >= 0 ? html`

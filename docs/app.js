@@ -147,6 +147,10 @@ const styles = html`
       align-self: stretch;
       flex: 1;
     }
+    .game-buttons {
+      width: 100%;
+      max-width: 400px;
+    }
   </style>
 `;
 

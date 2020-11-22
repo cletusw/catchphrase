@@ -32,6 +32,7 @@ function GameView() {
   const estimatedServerTimeMs = Date.now() + serverTimeOffset;
   const roundDone = estimatedServerTimeMs >= getRoundOverallEndTime(gameState);
 
+  // TODO: Hide the word for 0.5 seconds if the next player is also local??
   function startedView() {
     const currentPlayerIsLocal = isLocalPlayer(gameState.currentPlayerId);
     return html`
