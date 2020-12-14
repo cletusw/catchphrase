@@ -38,7 +38,7 @@ const wordsList = [
   'pack',
   'online',
   'snowman',
-  'Ã¯Â»Â¿aardvark',
+  'aardvark',
   'index',
   'skate',
   'cramp',
